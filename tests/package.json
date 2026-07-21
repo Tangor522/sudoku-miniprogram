@@ -1,0 +1,25 @@
+{
+  "name": "sudoku-miniprogram-tests",
+  "version": "1.0.0",
+  "description": "数独小程序测试（核心算法单元测试 + 云函数逻辑测试）",
+  "private": true,
+  "scripts": {
+    "test": "jest --verbose",
+    "test:sudoku": "jest sudoku --verbose",
+    "test:cloud": "jest cloudfunctions --verbose",
+    "test:e2e:smoke": "node e2e/smoke-pages.js"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/*.test.js"
+    ],
+    "moduleNameMapper": {
+      "^wx-server-sdk$": "<rootDir>/__mocks__/wx-server-sdk.js"
+    }
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "miniprogram-automator": "^0.12.1"
+  }
+}

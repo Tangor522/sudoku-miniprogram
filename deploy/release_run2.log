@@ -1,0 +1,293 @@
+[1m═══════════════════════════════════════════════════[0m
+[1m  数独小程序 · 一键发布[0m
+  AppID : wx2aee8764ea0cc2be
+  环境  : cloud1-d7g923wuw561b7bb6
+  函数  : 7 个
+  代码  : 上传 v1.0.0
+[1m═══════════════════════════════════════════════════[0m
+
+[32m✓[0m 已找到上传密钥: C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\deploy\privateKey.json
+[36mℹ[0m 运行 Jest 测试门禁 ...
+PASS unit/pk.test.js
+PASS cloudfunctions/pkState.logic.test.js
+PASS unit/timer.test.js
+PASS integration/pk-flow.test.js
+  ● Console
+
+    console.error
+      pkSubmit error: Error: 对局已结束
+          at C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\pkSubmit\index.js:23:45
+          at processTicksAndRejections (node:internal/process/task_queues:103:5)
+          at Object.runTransaction (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\tests\helpers\cloudDbMock.js:230:16)
+          at Object.<anonymous>.exports.main (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\pkSubmit\index.js:19:18)
+          at Object.<anonymous> (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\tests\integration\pk-flow.test.js:99:16)
+
+    [0m [90m 164 |[39m     [36mreturn[39m result[33m;[39m
+     [90m 165 |[39m   } [36mcatch[39m (err) {
+    [31m[1m>[22m[39m[90m 166 |[39m     console[33m.[39merror([32m'pkSubmit error:'[39m[33m,[39m err)[33m;[39m
+     [90m     |[39m             [31m[1m^[22m[39m
+     [90m 167 |[39m     [36mreturn[39m { ok[33m:[39m [36mfalse[39m[33m,[39m error[33m:[39m err[33m.[39mmessage [33m||[39m [32m'提交失败'[39m }[33m;[39m
+     [90m 168 |[39m   }
+     [90m 169 |[39m }[33m;[39m[0m
+
+      at error (../cloudfunctions/pkSubmit/index.js:166:13)
+      at Object.<anonymous> (integration/pk-flow.test.js:99:16)
+
+    console.error
+      pkSubmit error: Error: 对局已结束
+          at C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\pkSubmit\index.js:23:45
+          at processTicksAndRejections (node:internal/process/task_queues:103:5)
+          at Object.runTransaction (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\tests\helpers\cloudDbMock.js:230:16)
+          at Object.<anonymous>.exports.main (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\pkSubmit\index.js:19:18)
+          at async Promise.all (index 1)
+          at Object.<anonymous> (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\tests\integration\pk-flow.test.js:150:19)
+
+    [0m [90m 164 |[39m     [36mreturn[39m result[33m;[39m
+     [90m 165 |[39m   } [36mcatch[39m (err) {
+    [31m[1m>[22m[39m[90m 166 |[39m     console[33m.[39merror([32m'pkSubmit error:'[39m[33m,[39m err)[33m;[39m
+     [90m     |[39m             [31m[1m^[22m[39m
+     [90m 167 |[39m     [36mreturn[39m { ok[33m:[39m [36mfalse[39m[33m,[39m error[33m:[39m err[33m.[39mmessage [33m||[39m [32m'提交失败'[39m }[33m;[39m
+     [90m 168 |[39m   }
+     [90m 169 |[39m }[33m;[39m[0m
+
+      at error (../cloudfunctions/pkSubmit/index.js:166:13)
+          at async Promise.all (index 1)
+      at Object.<anonymous> (integration/pk-flow.test.js:150:19)
+
+PASS cloudfunctions/pkMatch.logic.test.js
+PASS unit/auth.test.js
+PASS cloudfunctions/pkSubmit.logic.test.js
+  ● Console
+
+    console.error
+      pkSubmit error: Error: 答案与题目不匹配
+          at C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\pkSubmit\index.js:44:19
+          at Object.runTransaction (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\tests\helpers\cloudDbMock.js:230:16)
+          at Object.<anonymous>.exports.main (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\pkSubmit\index.js:19:18)
+          at Object.<anonymous> (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\tests\cloudfunctions\pkSubmit.logic.test.js:98:15)
+
+    [0m [90m 164 |[39m     [36mreturn[39m result[33m;[39m
+     [90m 165 |[39m   } [36mcatch[39m (err) {
+    [31m[1m>[22m[39m[90m 166 |[39m     console[33m.[39merror([32m'pkSubmit error:'[39m[33m,[39m err)[33m;[39m
+     [90m     |[39m             [31m[1m^[22m[39m
+     [90m 167 |[39m     [36mreturn[39m { ok[33m:[39m [36mfalse[39m[33m,[39m error[33m:[39m err[33m.[39mmessage [33m||[39m [32m'提交失败'[39m }[33m;[39m
+     [90m 168 |[39m   }
+     [90m 169 |[39m }[33m;[39m[0m
+
+      at error (../cloudfunctions/pkSubmit/index.js:166:13)
+      at Object.<anonymous> (cloudfunctions/pkSubmit.logic.test.js:98:15)
+
+    console.error
+      pkSubmit error: Error: 非本局玩家
+          at C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\pkSubmit\index.js:30:30
+          at Object.runTransaction (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\tests\helpers\cloudDbMock.js:230:16)
+          at Object.<anonymous>.exports.main (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\pkSubmit\index.js:19:18)
+          at Object.<anonymous> (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\tests\cloudfunctions\pkSubmit.logic.test.js:122:15)
+
+    [0m [90m 164 |[39m     [36mreturn[39m result[33m;[39m
+     [90m 165 |[39m   } [36mcatch[39m (err) {
+    [31m[1m>[22m[39m[90m 166 |[39m     console[33m.[39merror([32m'pkSubmit error:'[39m[33m,[39m err)[33m;[39m
+     [90m     |[39m             [31m[1m^[22m[39m
+     [90m 167 |[39m     [36mreturn[39m { ok[33m:[39m [36mfalse[39m[33m,[39m error[33m:[39m err[33m.[39mmessage [33m||[39m [32m'提交失败'[39m }[33m;[39m
+     [90m 168 |[39m   }
+     [90m 169 |[39m }[33m;[39m[0m
+
+      at error (../cloudfunctions/pkSubmit/index.js:166:13)
+      at Object.<anonymous> (cloudfunctions/pkSubmit.logic.test.js:122:15)
+
+    console.error
+      pkSubmit error: Error: 对局已结束
+          at C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\pkSubmit\index.js:23:45
+          at Object.runTransaction (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\tests\helpers\cloudDbMock.js:230:16)
+          at Object.<anonymous>.exports.main (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\pkSubmit\index.js:19:18)
+          at Object.<anonymous> (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\tests\cloudfunctions\pkSubmit.logic.test.js:130:15)
+
+    [0m [90m 164 |[39m     [36mreturn[39m result[33m;[39m
+     [90m 165 |[39m   } [36mcatch[39m (err) {
+    [31m[1m>[22m[39m[90m 166 |[39m     console[33m.[39merror([32m'pkSubmit error:'[39m[33m,[39m err)[33m;[39m
+     [90m     |[39m             [31m[1m^[22m[39m
+     [90m 167 |[39m     [36mreturn[39m { ok[33m:[39m [36mfalse[39m[33m,[39m error[33m:[39m err[33m.[39mmessage [33m||[39m [32m'提交失败'[39m }[33m;[39m
+     [90m 168 |[39m   }
+     [90m 169 |[39m }[33m;[39m[0m
+
+      at error (../cloudfunctions/pkSubmit/index.js:166:13)
+      at Object.<anonymous> (cloudfunctions/pkSubmit.logic.test.js:130:15)
+
+    console.error
+      pkSubmit error: Error: 你已完成全部局数
+          at C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\pkSubmit\index.js:35:35
+          at Object.runTransaction (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\tests\helpers\cloudDbMock.js:230:16)
+          at Object.<anonymous>.exports.main (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\pkSubmit\index.js:19:18)
+          at Object.<anonymous> (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\tests\cloudfunctions\pkSubmit.logic.test.js:140:15)
+
+    [0m [90m 164 |[39m     [36mreturn[39m result[33m;[39m
+     [90m 165 |[39m   } [36mcatch[39m (err) {
+    [31m[1m>[22m[39m[90m 166 |[39m     console[33m.[39merror([32m'pkSubmit error:'[39m[33m,[39m err)[33m;[39m
+     [90m     |[39m             [31m[1m^[22m[39m
+     [90m 167 |[39m     [36mreturn[39m { ok[33m:[39m [36mfalse[39m[33m,[39m error[33m:[39m err[33m.[39mmessage [33m||[39m [32m'提交失败'[39m }[33m;[39m
+     [90m 168 |[39m   }
+     [90m 169 |[39m }[33m;[39m[0m
+
+      at error (../cloudfunctions/pkSubmit/index.js:166:13)
+      at Object.<anonymous> (cloudfunctions/pkSubmit.logic.test.js:140:15)
+
+PASS unit/storage.test.js
+PASS unit/cloud.test.js
+PASS unit/store.test.js
+PASS unit/theme.test.js
+PASS unit/sudoku.test.js
+PASS cloudfunctions/getRanking.logic.test.js
+PASS cloudfunctions/pkRecord.logic.test.js
+PASS cloudfunctions/login.logic.test.js
+PASS cloudfunctions/saveProgress.logic.test.js
+PASS ./sudoku.test.js
+
+Test Suites: 17 passed, 17 total
+Tests:       153 passed, 153 total
+Snapshots:   0 total
+Time:        4.354 s
+Ran all test suites.
+[32m✓[0m 测试全部通过
+
+  部署 login ... (node:13060) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[info] will upload code under C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\login as cloudfunction 'login' of env cloud1-d7g923wuw561b7bb6. remote-npm-install: false
+[info] checking cloudfunction status, will only proceed on normal status
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'login' status: Active
+[info] get cloudfunction info done
+[info] will update cloudfunction
+[info] updating cloudfunction info
+[info] update cloudfunction info done, waiting for it to take into effect
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'login' status: Updating
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'login' status: Active
+[info] cloudfunction info updated
+[info] zip file done, updating cloudfunction code
+[info] cloudfunction code updated, deploying
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'login' status: Updating
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'login' status: Active
+[info] deployed
+[32m✓[0m login 完成 (6840 文件, 14408KB, 36749ms)
+  部署 saveProgress ... [info] will upload code under C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\saveProgress as cloudfunction 'saveProgress' of env cloud1-d7g923wuw561b7bb6. remote-npm-install: false
+[info] checking cloudfunction status, will only proceed on normal status
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'saveProgress' status: Active
+[info] get cloudfunction info done
+[info] will update cloudfunction
+[info] updating cloudfunction info
+[info] update cloudfunction info done, waiting for it to take into effect
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'saveProgress' status: Updating
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'saveProgress' status: Active
+[info] cloudfunction info updated
+[info] zip file done, updating cloudfunction code
+[info] cloudfunction code updated, deploying
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'saveProgress' status: Updating
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'saveProgress' status: Active
+[info] deployed
+[32m✓[0m saveProgress 完成 (6840 文件, 14408KB, 32039ms)
+  部署 getRanking ... [info] will upload code under C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\getRanking as cloudfunction 'getRanking' of env cloud1-d7g923wuw561b7bb6. remote-npm-install: false
+[info] checking cloudfunction status, will only proceed on normal status
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'getRanking' status: Active
+[info] get cloudfunction info done
+[info] will update cloudfunction
+[info] updating cloudfunction info
+[info] update cloudfunction info done, waiting for it to take into effect
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'getRanking' status: Updating
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'getRanking' status: Active
+[info] cloudfunction info updated
+[info] zip file done, updating cloudfunction code
+[info] cloudfunction code updated, deploying
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'getRanking' status: Updating
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'getRanking' status: Active
+[info] deployed
+[32m✓[0m getRanking 完成 (6840 文件, 14408KB, 152281ms)
+  部署 pkMatch ... [info] will upload code under C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\pkMatch as cloudfunction 'pkMatch' of env cloud1-d7g923wuw561b7bb6. remote-npm-install: false
+[info] checking cloudfunction status, will only proceed on normal status
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'pkMatch' status: Active
+[info] get cloudfunction info done
+[info] will update cloudfunction
+[info] updating cloudfunction info
+[info] update cloudfunction info done, waiting for it to take into effect
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'pkMatch' status: Updating
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'pkMatch' status: Active
+[info] cloudfunction info updated
+[info] zip file done, updating cloudfunction code
+[info] cloudfunction code updated, deploying
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'pkMatch' status: Updating
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'pkMatch' status: Active
+[info] deployed
+[32m✓[0m pkMatch 完成 (6841 文件, 14410KB, 31731ms)
+  部署 pkState ... [info] will upload code under C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\pkState as cloudfunction 'pkState' of env cloud1-d7g923wuw561b7bb6. remote-npm-install: false
+[info] checking cloudfunction status, will only proceed on normal status
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'pkState' status: Active
+[info] get cloudfunction info done
+[info] will update cloudfunction
+[info] updating cloudfunction info
+[info] update cloudfunction info done, waiting for it to take into effect
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'pkState' status: Updating
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'pkState' status: Active
+[info] cloudfunction info updated
+[info] zip file done, updating cloudfunction code
+[info] cloudfunction code updated, deploying
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'pkState' status: Updating
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'pkState' status: Active
+[info] deployed
+[32m✓[0m pkState 完成 (6840 文件, 14409KB, 155559ms)
+  部署 pkSubmit ... [info] will upload code under C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\pkSubmit as cloudfunction 'pkSubmit' of env cloud1-d7g923wuw561b7bb6. remote-npm-install: false
+[info] checking cloudfunction status, will only proceed on normal status
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'pkSubmit' status: Active
+[info] get cloudfunction info done
+[info] will update cloudfunction
+[info] updating cloudfunction info
+[info] update cloudfunction info done, waiting for it to take into effect
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'pkSubmit' status: Updating
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'pkSubmit' status: Active
+[info] cloudfunction info updated
+[info] zip file done, updating cloudfunction code
+[info] cloudfunction code updated, deploying
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'pkSubmit' status: Updating
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'pkSubmit' status: Active
+[info] deployed
+[32m✓[0m pkSubmit 完成 (6841 文件, 14410KB, 32021ms)
+  部署 pkRecord ... [info] will upload code under C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\pkRecord as cloudfunction 'pkRecord' of env cloud1-d7g923wuw561b7bb6. remote-npm-install: false
+[info] checking cloudfunction status, will only proceed on normal status
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'pkRecord' status: Active
+[info] get cloudfunction info done
+[info] will update cloudfunction
+[info] updating cloudfunction info
+[info] update cloudfunction info done, waiting for it to take into effect
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'pkRecord' status: Updating
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'pkRecord' status: Active
+[info] cloudfunction info updated
+[info] zip file done, updating cloudfunction code
+[info] cloudfunction code updated, deploying
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'pkRecord' status: Updating
+[info] env cloud1-d7g923wuw561b7bb6's cloudfunction 'pkRecord' status: Active
+[info] deployed
+[32m✓[0m pkRecord 完成 (6840 文件, 14408KB, 33630ms)
+
+[1m──────── 云函数部署汇总 ────────[0m
+[32m✓[0m login        成功
+[32m✓[0m saveProgress 成功
+[32m✓[0m getRanking   成功
+[32m✓[0m pkMatch      成功
+[32m✓[0m pkState      成功
+[32m✓[0m pkSubmit     成功
+[32m✓[0m pkRecord     成功
+
+[36mℹ[0m 上传前端代码，版本 1.0.0 ...
+[summer-compiler] forkProcess [2026-07-07 09:52:56.931]
+serialize mini-weixin
+[summer-compiler] forkProcess serialize [2026-07-07 09:52:56.932]
+[summer-compiler] forkProcess start [2026-07-07 09:52:56.932]
+child process stderr: (node:8724) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+
+[summer-compiler] forkProcess done [2026-07-07 09:53:00.778]
+    [doing] analyzing codes...    [done] analyzing codes success    [warn] Ignored by project.config.json packOptions.ignore setting: tests/cloudfunctions/getRanking.logic.test.js,tests/cloudfunctions/login.logic.test.js,tests/cloudfunctions/pkMatch.logic.test.js,tests/cloudfunctions/pkRecord.logic.test.js,tests/cloudfunctions/pkState.logic.test.js,tests/cloudfunctions/pkSubmit.logic.test.js,tests/cloudfunctions/saveProgress.logic.test.js,tests/e2e/miniprogram-automator.demo.js,tests/helpers/cloudDbMock.js,tests/helpers/wxMock.js,tests/integration/pk-flow.test.js,tests/package-lock.json,tests/package.json,tests/sudoku.test.js,tests/unit/auth.test.js,tests/unit/cloud.test.js,tests/unit/pk.test.js,tests/unit/storage.test.js,tests/unit/store.test.js,tests/unit/sudoku.test.js,tests/unit/theme.test.js,tests/unit/timer.test.js,tests/__mocks__/wx-server-sdk.js    [doing] Compile miniprogram    [doing] Compile jSON files    [done]     [doing] Compiling app.js    [doing] Compiling app.js    [doing] Compiling app.wxss    [doing] Compiling app.wxss    [doing] Compiling cloudfunctions/getRanking/index.js    [doing] Compiling cloudfunctions/getRanking/index.js    [doing] Compiling cloudfunctions/login/index.js    [doing] Compiling cloudfunctions/login/index.js    [doing] Compiling cloudfunctions/pkMatch/index.js    [doing] Compiling cloudfunctions/pkMatch/index.js    [doing] Compiling cloudfunctions/pkMatch/sudoku.js    [doing] Compiling cloudfunctions/pkMatch/sudoku.js    [doing] Compiling cloudfunctions/pkRecord/index.js    [doing] Compiling cloudfunctions/pkRecord/index.js    [doing] Compiling cloudfunctions/pkState/index.js    [doing] Compiling cloudfunctions/pkState/index.js    [doing] Compiling cloudfunctions/pkSubmit/index.js    [doing] Compiling cloudfunctions/pkSubmit/index.js    [doing] Compiling cloudfunctions/pkSubmit/sudoku.js    [doing] Compiling cloudfunctions/pkSubmit/sudoku.js    [done] app.js    [done] cloudfunctions/getRanking/index.js    [done] cloudfunctions/login/index.js    [done] cloudfunctions/pkMatch/index.js    [done] cloudfunctions/pkMatch/sudoku.js    [done] cloudfunctions/pkRecord/index.js    [done] cloudfunctions/pkState/index.js    [done] cloudfunctions/pkSubmit/index.js    [done] cloudfunctions/pkSubmit/sudoku.js    [done] app.wxss    [done] app.wxss    [doing] Compiling cloudfunctions/saveProgress/index.js    [doing] Compiling cloudfunctions/saveProgress/index.js    [doing] Compiling deploy/release.js    [doing] Compiling deploy/release.js    [doing] Compiling pages/game4x4/game4x4.js    [doing] Compiling pages/game4x4/game4x4.js    [doing] Compiling pages/game4x4/game4x4.wxml    [doing] Compiling pages/game4x4/game4x4.wxml    [doing] Compiling pages/game4x4/game4x4.wxss    [doing] Compiling pages/game4x4/game4x4.wxss    [doing] Compiling pages/game6x6/game6x6.js    [doing] Compiling pages/game6x6/game6x6.js    [done] cloudfunctions/saveProgress/index.js    [doing] Compiling pages/game6x6/game6x6.wxml    [doing] Compiling pages/game6x6/game6x6.wxml    [done] deploy/release.js    [doing] Compiling pages/game6x6/game6x6.wxss    [doing] Compiling pages/game6x6/game6x6.wxss    [done] pages/game4x4/game4x4.js    [doing] Compiling pages/home/home.js    [doing] Compiling pages/home/home.js    [doing] Compiling pages/home/home.wxml    [doing] Compiling pages/home/home.wxml    [doing] Compiling pages/home/home.wxss    [doing] Compiling pages/home/home.wxss    [done] pages/game6x6/game6x6.js    [doing] Compiling pages/login/login.js    [doing] Compiling pages/login/login.js    [done] pages/game4x4/game4x4.wxml    [doing] Compiling pages/login/login.wxml    [doing] Compiling pages/login/login.wxml    [done] pages/game4x4/game4x4.wxss    [doing] Compiling pages/login/login.wxss    [doing] Compiling pages/login/login.wxss    [done] pages/home/home.js    [doing] Compiling pages/pk_game/pk_game.js    [doing] Compiling pages/pk_game/pk_game.js    [done] pages/game6x6/game6x6.wxml    [done] pages/game4x4/game4x4.wxml    [doing] Compiling pages/pk_game/pk_game.wxml    [doing] Compiling pages/pk_game/pk_game.wxml    [done] pages/game6x6/game6x6.wxss    [done] pages/game4x4/game4x4.wxss    [doing] Compiling pages/pk_game/pk_game.wxss    [doing] Compiling pages/pk_game/pk_game.wxss    [done] pages/login/login.js    [doing] Compiling pages/pk_lobby/pk_lobby.js    [doing] Compiling pages/pk_lobby/pk_lobby.js    [done] pages/home/home.wxml    [done] pages/game6x6/game6x6.wxml    [doing] Compiling pages/pk_lobby/pk_lobby.wxml    [doing] Compiling pages/pk_lobby/pk_lobby.wxml    [done] pages/home/home.wxss    [done] pages/game6x6/game6x6.wxss    [doing] Compiling pages/pk_lobby/pk_lobby.wxss    [doing] Compiling pages/pk_lobby/pk_lobby.wxss    [done] pages/pk_game/pk_game.js    [doing] Compiling pages/ranking/ranking.js    [doing] Compiling pages/ranking/ranking.js    [done] pages/login/login.wxml    [done] pages/home/home.wxml    [doing] Compiling pages/ranking/ranking.wxml    [doing] Compiling pages/ranking/ranking.wxml    [done] pages/login/login.wxss    [done] pages/home/home.wxss    [doing] Compiling pages/ranking/ranking.wxss    [doing] Compiling pages/ranking/ranking.wxss    [done] pages/pk_lobby/pk_lobby.js    [doing] Compiling pages/stats/stats.js    [doing] Compiling pages/stats/stats.js    [done] pages/pk_game/pk_game.wxml    [done] pages/login/login.wxml    [doing] Compiling pages/stats/stats.wxml    [doing] Compiling pages/stats/stats.wxml    [done] pages/pk_game/pk_game.wxss    [done] pages/login/login.wxss    [doing] Compiling pages/stats/stats.wxss    [doing] Compiling pages/stats/stats.wxss    [done] pages/ranking/ranking.js    [doing] Compiling utils/auth.js    [doing] Compiling utils/auth.js    [done] pages/pk_lobby/pk_lobby.wxml    [done] pages/pk_game/pk_game.wxml    [doing] Compiling utils/cloud.js    [doing] Compiling utils/cloud.js    [done] pages/pk_lobby/pk_lobby.wxss    [done] pages/pk_game/pk_game.wxss    [doing] Compiling utils/pk.js    [doing] Compiling utils/pk.js    [done] pages/stats/stats.js    [doing] Compiling utils/storage.js    [doing] Compiling utils/storage.js    [done] pages/ranking/ranking.wxml    [done] pages/pk_lobby/pk_lobby.wxml    [doing] Compiling utils/store.js    [doing] Compiling utils/store.js    [done] pages/ranking/ranking.wxss    [done] pages/pk_lobby/pk_lobby.wxss    [doing] Compiling utils/sudoku.js    [doing] Compiling utils/sudoku.js    [done] utils/auth.js    [doing] Compiling utils/theme.js    [doing] Compiling utils/theme.js    [done] pages/stats/stats.wxml    [done] utils/cloud.js    [done] pages/ranking/ranking.wxml    [doing] Compiling utils/timer.js    [doing] Compiling utils/timer.js    [done] pages/stats/stats.wxss    [done] utils/pk.js    [done] pages/ranking/ranking.wxss    [done] utils/storage.js    [done] utils/store.js    [done] pages/stats/stats.wxml    [done] utils/sudoku.js    [done] pages/stats/stats.wxss    [done] utils/theme.js    [done] utils/timer.js    [done] app.js    [done] cloudfunctions/pkMatch/sudoku.js    [done] cloudfunctions/pkRecord/index.js    [done] cloudfunctions/login/index.js    [done] cloudfunctions/getRanking/index.js    [done] cloudfunctions/pkSubmit/sudoku.js    [done] pages/pk_lobby/pk_lobby.js    [done] cloudfunctions/pkState/index.js    [done] pages/ranking/ranking.js    [done] cloudfunctions/pkSubmit/index.js    [done] pages/stats/stats.js    [done] utils/auth.js    [done] pages/pk_game/pk_game.js    [done] utils/cloud.js    [done] utils/storage.js    [done] utils/store.js    [done] utils/pk.js    [done] cloudfunctions/pkMatch/index.js    [done] utils/theme.js    [done] utils/sudoku.js    [done] utils/timer.js    [done] pages/game4x4/game4x4.js    [done] deploy/release.js    [done] pages/home/home.js    [done] pages/game6x6/game6x6.js    [done] pages/login/login.js    [done] cloudfunctions/saveProgress/index.jschild process stdout: getCodeFiles: count: 44, cost: 14684ms.
+
+    [doing] Append babel helper files    [done]     [doing] Seal code package    [done]     [done]     [doing] analyzing codes...    [done] analyzing codes success    [done] Pack resource file finish    [doing] upload[info] useCOS parameter:  undefined
+[info] upload zip buffer size:  199167
+[info] request url: https://servicewechat.com/wxa/ci/upload?codeprotect=0&type=miniProgram&appid=wx2aee8764ea0cc2be&version=1.0.0&desc=%E6%95%B0%E7%8B%AC%E5%B0%8F%E5%8B%87%E5%A3%AB%20%E8%87%AA%E5%8A%A8%E5%8F%91%E5%B8%83&robot=1&debugLaunchInfo=%7B%22scene%22%3A1011%7D
+[error] 20003 Error: {"errCode":-1,"errMsg":"inner upload fail with errcode: -80057, errmsg: invalid file: deploy/release.js, 1:0\nSyntaxError: Invalid or unexpected token\n#!/usr/bin/env node"}
+[31m✗[0m 前端代码上传失败: Error: {"errCode":-1,"errMsg":"inner upload fail with errcode: -80057, errmsg: invalid file: deploy/release.js, 1:0\nSyntaxError: Invalid or unexpected token\n#!/usr/bin/env node"}
+
+[33m⚠[0m 云函数已就绪，但前端代码上传失败，可重跑 `node release.js --skip-tests` 仅补传代码。

@@ -1,0 +1,47 @@
+<!-- pages/login/login.wxml -->
+<view class="root theme-{{colorMode}} page-bg">
+  <view class="login-container">
+    <!-- Logo -->
+    <view class="logo">
+      <text class="logo-emoji">🦄</text>
+      <text class="logo-title">数独小勇士</text>
+    </view>
+
+    <!-- 静默登录中 -->
+    <view wx:if="{{silencing}}" class="silent-box">
+      <view class="silent-spinner"></view>
+      <view class="silent-text">正在登录...</view>
+    </view>
+
+    <!-- 静默失败，展示手动登录按钮 -->
+    <view wx:elif="{{silentFail && !showProfile}}" class="login-box">
+      <view class="login-desc">登录服务暂时不可用，请重试</view>
+      <button class="btn-primary login-btn" bindtap="handleLogin">
+        <text class="btn-icon">🔐</text> 重新登录
+      </button>
+      <view wx:if="{{isLocalMode}}" class="local-tip">
+        提示：未开通云开发，进度仅保存在本机
+      </view>
+    </view>
+
+    <!-- 资料补全（首次登录后显示） -->
+    <view wx:if="{{showProfile}}" class="profile-box">
+      <view class="profile-title">完善资料</view>
+
+      <button class="avatar-wrapper" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+        <image wx:if="{{avatarUrl}}" class="avatar" src="{{avatarUrl}}" mode="aspectFill"></image>
+        <view wx:else class="avatar avatar-placeholder">👤</view>
+        <view class="avatar-tip">点击选择头像</view>
+      </button>
+
+      <view class="nick-row">
+        <text class="nick-label">昵称</text>
+        <input type="nickname" class="nick-input" placeholder="请输入昵称"
+               value="{{nickName}}" bindblur="onNickBlur" bindinput="onNickInput" />
+      </view>
+
+      <button class="btn-primary save-btn" bindtap="saveProfile">保存并进入</button>
+      <view class="skip-btn" bindtap="skipProfile">跳过，稍后设置</view>
+    </view>
+  </view>
+</view>

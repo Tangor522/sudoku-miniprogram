@@ -1,0 +1,9 @@
+{
+  "name": "getRanking",
+  "version": "1.0.0",
+  "description": "排行榜：聚合统计玩家总关数、总用时",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

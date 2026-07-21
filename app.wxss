@@ -1,0 +1,160 @@
+/* app.wxss - 全局样式：三套主题 CSS 变量 + 通用类 */
+
+/* ============ 默认主题变量（粉色，与 theme-normal 一致） ============ */
+page {
+  --bg-from: #fdf2f8;
+  --bg-via: #fce7f3;
+  --bg-to: #fbcfe8;
+  --primary-from: #f472b6;
+  --primary-to: #fb7185;
+  --primary-solid: #ec4899;
+  --primary-text: #be185d;
+  --cell-selected: #fbcfe8;
+  --cell-highlight: #fce7f3;
+  --cell-fixed: #fff1f2;
+  --cell-empty: #fce7f3;
+  --border-color: #f9a8d4;
+  --error-color: #FF7F7F;
+  --header-bg: #fce7f3;
+  --card-bg: #ffffff;
+  --text-main: #3f3348;
+  --text-muted: #817489;
+  --accent-soft: #f9c8dc;
+  --secondary-soft: #ddd2ff;
+  --cell-bg: #ffffff;
+  --cell-peer: #fff1f6;
+  --cell-same: #f8d8e6;
+  --grid-line: #eadde5;
+  --board-line: #806c7c;
+  --primary-shadow: rgba(236,72,153,.24);
+  --shadow-soft: 0 8rpx 24rpx rgba(73,50,71,.08);
+  --shadow-card: 0 22rpx 60rpx rgba(73,50,71,.12);
+}
+
+/* ============ 三套主题（通过根节点 view.theme-xxx 切换） ============ */
+.theme-normal {
+  --bg-from: #fdf2f8; --bg-via: #fce7f3; --bg-to: #fbcfe8;
+  --primary-from: #f472b6; --primary-to: #fb7185; --primary-solid: #ec4899;
+  --primary-text: #be185d;
+  --cell-selected: #fbcfe8; --cell-highlight: #fce7f3;
+  --cell-fixed: #fff1f2; --cell-empty: #fce7f3;
+  --border-color: #f9a8d4; --error-color: #FF7F7F;
+  --header-bg: #fce7f3; --card-bg: #ffffff;
+  --text-main: #3f3348; --text-muted: #817489;
+  --accent-soft: #f9c8dc; --secondary-soft: #ddd2ff;
+  --cell-bg: #fff; --cell-peer: #fff1f6; --cell-same: #f8d8e6;
+  --grid-line: #eadde5; --board-line: #806c7c; --primary-shadow: rgba(236,72,153,.24);
+  --shadow-soft: 0 8rpx 24rpx rgba(73,50,71,.08); --shadow-card: 0 22rpx 60rpx rgba(73,50,71,.12);
+}
+.theme-soft {
+  --bg-from: #f0fdf4; --bg-via: #dcfce7; --bg-to: #bbf7d0;
+  --primary-from: #4ade80; --primary-to: #34d399; --primary-solid: #22c55e;
+  --primary-text: #15803d;
+  --cell-selected: #bbf7d0; --cell-highlight: #dcfce7;
+  --cell-fixed: #f0fdf4; --cell-empty: #dcfce7;
+  --border-color: #86efac; --error-color: #FF7F7F;
+  --header-bg: #dcfce7; --card-bg: #ffffff;
+  --text-main: #294438; --text-muted: #6e8279;
+  --accent-soft: #bcebd2; --secondary-soft: #d8eadd;
+  --cell-bg: #fff; --cell-peer: #edf9f2; --cell-same: #ccefdc;
+  --grid-line: #d9e9df; --board-line: #607a6d; --primary-shadow: rgba(34,197,94,.2);
+  --shadow-soft: 0 8rpx 24rpx rgba(35,73,54,.08); --shadow-card: 0 22rpx 60rpx rgba(35,73,54,.12);
+}
+.theme-eye-care {
+  --bg-from: #fffbeb; --bg-via: #fef3c7; --bg-to: #fde68a;
+  --primary-from: #fbbf24; --primary-to: #f59e0b; --primary-solid: #d97706;
+  --primary-text: #b45309;
+  --cell-selected: #fde68a; --cell-highlight: #fef3c7;
+  --cell-fixed: #fffbeb; --cell-empty: #fef3c7;
+  --border-color: #fcd34d; --error-color: #FF7F7F;
+  --header-bg: #fef3c7; --card-bg: #ffffff;
+  --text-main: #4d402e; --text-muted: #88785e;
+  --accent-soft: #f7d89c; --secondary-soft: #e7dfb8;
+  --cell-bg: #fffef9; --cell-peer: #fff8dd; --cell-same: #f8e6a9;
+  --grid-line: #e9dfc4; --board-line: #806f52; --primary-shadow: rgba(217,119,6,.2);
+  --shadow-soft: 0 8rpx 24rpx rgba(84,65,35,.08); --shadow-card: 0 22rpx 60rpx rgba(84,65,35,.12);
+}
+
+/* ============ 页面渐变背景容器 ============ */
+.page-bg {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, var(--bg-from), var(--bg-via), var(--bg-to));
+}
+
+/* ============ 通用按钮 ============ */
+.btn-primary {
+  background: linear-gradient(to right, var(--primary-from), var(--primary-to));
+  color: #ffffff;
+  border-radius: 32rpx;
+  font-weight: 700;
+  font-size: 36rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.12);
+  transition: all 0.3s;
+  line-height: 1.6;
+}
+.btn-primary::after { border: none; }
+
+.btn-secondary {
+  background: linear-gradient(to right, var(--primary-to), var(--primary-from));
+  color: #ffffff;
+  border-radius: 32rpx;
+  font-weight: 700;
+  font-size: 36rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.12);
+  transition: all 0.3s;
+  line-height: 1.6;
+}
+.btn-secondary::after { border: none; }
+
+.btn-accent {
+  background: linear-gradient(to right, var(--primary-from), var(--primary-to));
+  color: #ffffff;
+  border-radius: 32rpx;
+  font-weight: 700;
+  font-size: 36rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.12);
+  transition: all 0.3s;
+  line-height: 1.6;
+}
+.btn-accent::after { border: none; }
+
+/* 按下态 */
+.btn-primary:active, .btn-secondary:active, .btn-accent:active {
+  transform: scale(0.97);
+}
+
+/* ============ 卡片 ============ */
+.card {
+  background: var(--card-bg);
+  border-radius: 24rpx;
+  padding: 32rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.08);
+}
+
+/* ============ 遮罩层 ============ */
+.mask {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============ 通用文本 ============ */
+.text-primary { color: var(--primary-text); }
+.text-bold { font-weight: 700; }
+
+/* ============ 动画 ============ */
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-16rpx); }
+}
+.animate-bounce { animation: bounce 1s ease-in-out infinite; }
+
+@keyframes pop {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-pop { animation: pop 0.4s ease; }

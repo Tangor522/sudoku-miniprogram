@@ -1,0 +1,178 @@
+[1m═══════════════════════════════════════════════════[0m
+[1m  数独小程序 · 一键发布[0m
+  AppID : wx2aee8764ea0cc2be
+  环境  : cloud1-d7g923wuw561b7bb6
+  函数  : 7 个
+  代码  : 上传 v1.0.0
+[1m═══════════════════════════════════════════════════[0m
+
+[32m✓[0m 已找到上传密钥: C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\deploy\privateKey.json
+[36mℹ[0m 运行 Jest 测试门禁 ...
+PASS unit/theme.test.js
+PASS ./sudoku.test.js
+PASS unit/cloud.test.js
+PASS unit/sudoku.test.js
+PASS unit/timer.test.js
+PASS cloudfunctions/pkSubmit.logic.test.js
+  ● Console
+
+    console.error
+      pkSubmit error: Error: 答案与题目不匹配
+          at C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\pkSubmit\index.js:44:19
+          at Object.runTransaction (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\tests\helpers\cloudDbMock.js:230:16)
+          at Object.<anonymous>.exports.main (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\pkSubmit\index.js:19:18)
+          at Object.<anonymous> (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\tests\cloudfunctions\pkSubmit.logic.test.js:98:15)
+
+    [0m [90m 164 |[39m     [36mreturn[39m result[33m;[39m
+     [90m 165 |[39m   } [36mcatch[39m (err) {
+    [31m[1m>[22m[39m[90m 166 |[39m     console[33m.[39merror([32m'pkSubmit error:'[39m[33m,[39m err)[33m;[39m
+     [90m     |[39m             [31m[1m^[22m[39m
+     [90m 167 |[39m     [36mreturn[39m { ok[33m:[39m [36mfalse[39m[33m,[39m error[33m:[39m err[33m.[39mmessage [33m||[39m [32m'提交失败'[39m }[33m;[39m
+     [90m 168 |[39m   }
+     [90m 169 |[39m }[33m;[39m[0m
+
+      at error (../cloudfunctions/pkSubmit/index.js:166:13)
+      at Object.<anonymous> (cloudfunctions/pkSubmit.logic.test.js:98:15)
+
+    console.error
+      pkSubmit error: Error: 非本局玩家
+          at C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\pkSubmit\index.js:30:30
+          at Object.runTransaction (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\tests\helpers\cloudDbMock.js:230:16)
+          at Object.<anonymous>.exports.main (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\pkSubmit\index.js:19:18)
+          at Object.<anonymous> (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\tests\cloudfunctions\pkSubmit.logic.test.js:122:15)
+
+    [0m [90m 164 |[39m     [36mreturn[39m result[33m;[39m
+     [90m 165 |[39m   } [36mcatch[39m (err) {
+    [31m[1m>[22m[39m[90m 166 |[39m     console[33m.[39merror([32m'pkSubmit error:'[39m[33m,[39m err)[33m;[39m
+     [90m     |[39m             [31m[1m^[22m[39m
+     [90m 167 |[39m     [36mreturn[39m { ok[33m:[39m [36mfalse[39m[33m,[39m error[33m:[39m err[33m.[39mmessage [33m||[39m [32m'提交失败'[39m }[33m;[39m
+     [90m 168 |[39m   }
+     [90m 169 |[39m }[33m;[39m[0m
+
+      at error (../cloudfunctions/pkSubmit/index.js:166:13)
+      at Object.<anonymous> (cloudfunctions/pkSubmit.logic.test.js:122:15)
+
+    console.error
+      pkSubmit error: Error: 对局已结束
+          at C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\pkSubmit\index.js:23:45
+          at Object.runTransaction (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\tests\helpers\cloudDbMock.js:230:16)
+          at Object.<anonymous>.exports.main (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\pkSubmit\index.js:19:18)
+          at Object.<anonymous> (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\tests\cloudfunctions\pkSubmit.logic.test.js:130:15)
+
+    [0m [90m 164 |[39m     [36mreturn[39m result[33m;[39m
+     [90m 165 |[39m   } [36mcatch[39m (err) {
+    [31m[1m>[22m[39m[90m 166 |[39m     console[33m.[39merror([32m'pkSubmit error:'[39m[33m,[39m err)[33m;[39m
+     [90m     |[39m             [31m[1m^[22m[39m
+     [90m 167 |[39m     [36mreturn[39m { ok[33m:[39m [36mfalse[39m[33m,[39m error[33m:[39m err[33m.[39mmessage [33m||[39m [32m'提交失败'[39m }[33m;[39m
+     [90m 168 |[39m   }
+     [90m 169 |[39m }[33m;[39m[0m
+
+      at error (../cloudfunctions/pkSubmit/index.js:166:13)
+      at Object.<anonymous> (cloudfunctions/pkSubmit.logic.test.js:130:15)
+
+    console.error
+      pkSubmit error: Error: 你已完成全部局数
+          at C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\pkSubmit\index.js:35:35
+          at Object.runTransaction (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\tests\helpers\cloudDbMock.js:230:16)
+          at Object.<anonymous>.exports.main (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\pkSubmit\index.js:19:18)
+          at Object.<anonymous> (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\tests\cloudfunctions\pkSubmit.logic.test.js:140:15)
+
+    [0m [90m 164 |[39m     [36mreturn[39m result[33m;[39m
+     [90m 165 |[39m   } [36mcatch[39m (err) {
+    [31m[1m>[22m[39m[90m 166 |[39m     console[33m.[39merror([32m'pkSubmit error:'[39m[33m,[39m err)[33m;[39m
+     [90m     |[39m             [31m[1m^[22m[39m
+     [90m 167 |[39m     [36mreturn[39m { ok[33m:[39m [36mfalse[39m[33m,[39m error[33m:[39m err[33m.[39mmessage [33m||[39m [32m'提交失败'[39m }[33m;[39m
+     [90m 168 |[39m   }
+     [90m 169 |[39m }[33m;[39m[0m
+
+      at error (../cloudfunctions/pkSubmit/index.js:166:13)
+      at Object.<anonymous> (cloudfunctions/pkSubmit.logic.test.js:140:15)
+
+PASS integration/pk-flow.test.js
+  ● Console
+
+    console.error
+      pkSubmit error: Error: 对局已结束
+          at C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\pkSubmit\index.js:23:45
+          at processTicksAndRejections (node:internal/process/task_queues:103:5)
+          at Object.runTransaction (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\tests\helpers\cloudDbMock.js:230:16)
+          at Object.<anonymous>.exports.main (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\pkSubmit\index.js:19:18)
+          at Object.<anonymous> (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\tests\integration\pk-flow.test.js:99:16)
+
+    [0m [90m 164 |[39m     [36mreturn[39m result[33m;[39m
+     [90m 165 |[39m   } [36mcatch[39m (err) {
+    [31m[1m>[22m[39m[90m 166 |[39m     console[33m.[39merror([32m'pkSubmit error:'[39m[33m,[39m err)[33m;[39m
+     [90m     |[39m             [31m[1m^[22m[39m
+     [90m 167 |[39m     [36mreturn[39m { ok[33m:[39m [36mfalse[39m[33m,[39m error[33m:[39m err[33m.[39mmessage [33m||[39m [32m'提交失败'[39m }[33m;[39m
+     [90m 168 |[39m   }
+     [90m 169 |[39m }[33m;[39m[0m
+
+      at error (../cloudfunctions/pkSubmit/index.js:166:13)
+      at Object.<anonymous> (integration/pk-flow.test.js:99:16)
+
+    console.error
+      pkSubmit error: Error: 对局已结束
+          at C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\pkSubmit\index.js:23:45
+          at processTicksAndRejections (node:internal/process/task_queues:103:5)
+          at Object.runTransaction (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\tests\helpers\cloudDbMock.js:230:16)
+          at Object.<anonymous>.exports.main (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\pkSubmit\index.js:19:18)
+          at async Promise.all (index 1)
+          at Object.<anonymous> (C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\tests\integration\pk-flow.test.js:150:19)
+
+    [0m [90m 164 |[39m     [36mreturn[39m result[33m;[39m
+     [90m 165 |[39m   } [36mcatch[39m (err) {
+    [31m[1m>[22m[39m[90m 166 |[39m     console[33m.[39merror([32m'pkSubmit error:'[39m[33m,[39m err)[33m;[39m
+     [90m     |[39m             [31m[1m^[22m[39m
+     [90m 167 |[39m     [36mreturn[39m { ok[33m:[39m [36mfalse[39m[33m,[39m error[33m:[39m err[33m.[39mmessage [33m||[39m [32m'提交失败'[39m }[33m;[39m
+     [90m 168 |[39m   }
+     [90m 169 |[39m }[33m;[39m[0m
+
+      at error (../cloudfunctions/pkSubmit/index.js:166:13)
+          at async Promise.all (index 1)
+      at Object.<anonymous> (integration/pk-flow.test.js:150:19)
+
+PASS unit/store.test.js
+PASS cloudfunctions/pkMatch.logic.test.js
+PASS unit/pk.test.js
+PASS unit/auth.test.js
+PASS cloudfunctions/pkState.logic.test.js
+PASS unit/storage.test.js
+PASS cloudfunctions/getRanking.logic.test.js
+PASS cloudfunctions/pkRecord.logic.test.js
+PASS cloudfunctions/login.logic.test.js
+PASS cloudfunctions/saveProgress.logic.test.js
+
+Test Suites: 17 passed, 17 total
+Tests:       153 passed, 153 total
+Snapshots:   0 total
+Time:        4.249 s
+Ran all test suites.
+[32m✓[0m 测试全部通过
+
+  部署 login ... (node:26612) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[info] will upload code under C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\login as cloudfunction 'login' of env cloud1-d7g923wuw561b7bb6. remote-npm-install: false
+[31m✗[0m login 失败: -10008 invalid ip: 183.62.35.168, reference: https://developers.weixin.qq.com/miniprogram/dev/devtools/ci.html
+  部署 saveProgress ... [info] will upload code under C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\saveProgress as cloudfunction 'saveProgress' of env cloud1-d7g923wuw561b7bb6. remote-npm-install: false
+[31m✗[0m saveProgress 失败: -10008 invalid ip: 183.62.35.168, reference: https://developers.weixin.qq.com/miniprogram/dev/devtools/ci.html
+  部署 getRanking ... [info] will upload code under C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\getRanking as cloudfunction 'getRanking' of env cloud1-d7g923wuw561b7bb6. remote-npm-install: false
+[31m✗[0m getRanking 失败: -10008 invalid ip: 183.62.35.168, reference: https://developers.weixin.qq.com/miniprogram/dev/devtools/ci.html
+  部署 pkMatch ... [info] will upload code under C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\pkMatch as cloudfunction 'pkMatch' of env cloud1-d7g923wuw561b7bb6. remote-npm-install: false
+[31m✗[0m pkMatch 失败: -10008 invalid ip: 183.62.35.168, reference: https://developers.weixin.qq.com/miniprogram/dev/devtools/ci.html
+  部署 pkState ... [info] will upload code under C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\pkState as cloudfunction 'pkState' of env cloud1-d7g923wuw561b7bb6. remote-npm-install: false
+[31m✗[0m pkState 失败: -10008 invalid ip: 183.62.35.168, reference: https://developers.weixin.qq.com/miniprogram/dev/devtools/ci.html
+  部署 pkSubmit ... [info] will upload code under C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\pkSubmit as cloudfunction 'pkSubmit' of env cloud1-d7g923wuw561b7bb6. remote-npm-install: false
+[31m✗[0m pkSubmit 失败: -10008 invalid ip: 183.62.35.168, reference: https://developers.weixin.qq.com/miniprogram/dev/devtools/ci.html
+  部署 pkRecord ... [info] will upload code under C:\Users\luozt\WorkBuddy\2026-07-01-12-41-40\sudoku-miniprogram\cloudfunctions\pkRecord as cloudfunction 'pkRecord' of env cloud1-d7g923wuw561b7bb6. remote-npm-install: false
+[31m✗[0m pkRecord 失败: -10008 invalid ip: 183.62.35.168, reference: https://developers.weixin.qq.com/miniprogram/dev/devtools/ci.html
+
+[1m──────── 云函数部署汇总 ────────[0m
+[31m✗[0m login        失败: -10008 invalid ip: 183.62.35.168, reference: https://developers.weixin.qq.com/miniprogram/dev/devtools/ci.html
+[31m✗[0m saveProgress 失败: -10008 invalid ip: 183.62.35.168, reference: https://developers.weixin.qq.com/miniprogram/dev/devtools/ci.html
+[31m✗[0m getRanking   失败: -10008 invalid ip: 183.62.35.168, reference: https://developers.weixin.qq.com/miniprogram/dev/devtools/ci.html
+[31m✗[0m pkMatch      失败: -10008 invalid ip: 183.62.35.168, reference: https://developers.weixin.qq.com/miniprogram/dev/devtools/ci.html
+[31m✗[0m pkState      失败: -10008 invalid ip: 183.62.35.168, reference: https://developers.weixin.qq.com/miniprogram/dev/devtools/ci.html
+[31m✗[0m pkSubmit     失败: -10008 invalid ip: 183.62.35.168, reference: https://developers.weixin.qq.com/miniprogram/dev/devtools/ci.html
+[31m✗[0m pkRecord     失败: -10008 invalid ip: 183.62.35.168, reference: https://developers.weixin.qq.com/miniprogram/dev/devtools/ci.html
+
+[31m✗[0m [1m存在部署失败的函数，请修复后重跑。[0m

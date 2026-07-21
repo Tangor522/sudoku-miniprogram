@@ -1,0 +1,139 @@
+<!-- pages/pk_game/pk_game.wxml -->
+<view class="root theme-{{colorMode}} page-bg">
+  <view wx:if="{{loading}}" class="loading-box">
+    <view class="loading-text">加载对局...</view>
+  </view>
+
+  <view wx:else class="game-container">
+    <!-- 顶栏 -->
+    <view class="topbar">
+      <view class="back-btn" bindtap="surrender">🏳️ 退出</view>
+      <view class="round-info">{{mode}} · {{totalRounds}}局</view>
+      <view class="timer">⏱️ {{timerText}}</view>
+    </view>
+
+    <!-- 双方信息 -->
+    <view class="players-bar">
+      <view class="player-info {{mySlot === 0 ? 'left' : 'right'}}">
+        <image wx:if="{{myInfo.avatarUrl}}" class="player-avatar" src="{{myInfo.avatarUrl}}" mode="aspectFill"></image>
+        <view wx:else class="player-avatar placeholder">我</view>
+        <view class="player-meta">
+          <view class="player-name">我{{gamePhase === 'playing' ? '（' + myCurrentRound + '/' + totalRounds + '）' : ''}}</view>
+          <view class="player-total">{{myTotalTimeText}}</view>
+        </view>
+      </view>
+      <view class="vs">VS</view>
+      <view class="player-info {{oppSlot === 0 ? 'left' : 'right'}}">
+        <view class="player-meta">
+          <view class="player-name">{{oppInfo.nickName || '对手'}}{{gamePhase === 'playing' ? '（' + oppCurrentRound + '/' + totalRounds + '）' : ''}}</view>
+          <view class="player-total">{{oppTotalTimeText}}</view>
+        </view>
+        <image wx:if="{{oppInfo.avatarUrl}}" class="player-avatar" src="{{oppInfo.avatarUrl}}" mode="aspectFill"></image>
+        <view wx:else class="player-avatar placeholder">对手</view>
+      </view>
+    </view>
+
+    <!-- 准备阶段 -->
+    <view wx:if="{{gamePhase === 'readying'}}" class="ready-section">
+      <view class="ready-card">
+        <view class="ready-emoji">⚔️</view>
+        <view class="ready-title">对战即将开始</view>
+        <view class="ready-vs">
+          <view class="ready-player">
+            <image wx:if="{{myInfo.avatarUrl}}" class="ready-avatar" src="{{myInfo.avatarUrl}}" mode="aspectFill"></image>
+            <view wx:else class="ready-avatar placeholder">我</view>
+            <text class="ready-name">我</text>
+            <view class="ready-status {{myReady ? 'ready-yes' : 'ready-wait'}}">{{myReady ? '✅ 已准备' : '未准备'}}</view>
+          </view>
+          <view class="ready-divider">VS</view>
+          <view class="ready-player">
+            <image wx:if="{{oppInfo.avatarUrl}}" class="ready-avatar" src="{{oppInfo.avatarUrl}}" mode="aspectFill"></image>
+            <view wx:else class="ready-avatar placeholder">?</view>
+            <text class="ready-name">{{oppInfo.nickName || '对手'}}</text>
+            <view class="ready-status {{oppReady ? 'ready-yes' : 'ready-wait'}}">{{oppReady ? '✅ 已准备' : '等待中...'}}</view>
+          </view>
+        </view>
+        <button wx:if="{{!myReady}}" class="btn-primary ready-btn" bindtap="handleReady">🚀 准备开始</button>
+        <view wx:else class="ready-waiting-text">等待对手准备...</view>
+      </view>
+    </view>
+
+    <!-- 游戏进行中 -->
+    <block wx:if="{{gamePhase === 'playing'}}">
+      <!-- 对手进度条 -->
+      <view class="opp-section">
+        <view class="opp-progress-bar">
+          <view class="opp-progress-label">
+            <text>{{oppInfo.nickName || '对手'}} 进度</text>
+            <text class="opp-progress-round">{{oppCurrentRound}}/{{totalRounds}} 局</text>
+          </view>
+          <view class="progress-track">
+            <view class="progress-fill" style="width: {{oppProgressPercent}}%"></view>
+          </view>
+          <view class="opp-progress-time">累计 {{oppTotalTimeText}}</view>
+        </view>
+      </view>
+
+      <!-- 我的棋盘 -->
+      <view class="my-grid my-grid-{{mode}}">
+        <block wx:for="{{gridRows}}" wx:for-item="row" wx:key="row">
+          <view class="grid-row">
+            <block wx:for="{{row}}" wx:for-item="cell" wx:key="col">
+              <view class="cell-wrap {{cell.borderLeft ? 'border-left' : ''}} {{cell.borderTop ? 'border-top' : ''}}">
+                <view class="cell {{cell.fixed ? 'cell-fixed' : ''}} {{cell.error ? 'cell-error' : ''}} {{cell.selected ? 'cell-selected' : ''}}"
+                      data-row="{{cell.row}}" data-col="{{cell.col}}" bindtap="selectCell">
+                  <text class="cell-text">{{cell.value !== 0 ? cell.value : ''}}</text>
+                </view>
+              </view>
+            </block>
+          </view>
+        </block>
+      </view>
+
+      <!-- 数字键盘（2行，与单人模式一致） -->
+      <view class="numpad">
+        <view class="numpad-row">
+          <view wx:for="{{numbersRow1}}" wx:key="*this" class="num-btn" data-num="{{item}}" bindtap="onNumberClick">{{item}}</view>
+        </view>
+        <view class="numpad-row">
+          <view wx:for="{{numbersRow2}}" wx:key="*this" class="num-btn" data-num="{{item}}" bindtap="onNumberClick">{{item}}</view>
+        </view>
+      </view>
+
+      <!-- 提交按钮 -->
+      <button class="btn-primary submit-btn" bindtap="submitAnswer">✅ 提交答案</button>
+    </block>
+
+    <!-- 对方掉线提示 -->
+    <view wx:if="{{oppOffline}}" class="offline-tip">
+      对手掉线，等待重连... {{reconnectCountdown}}s
+    </view>
+  </view>
+
+  <!-- 局间结果弹窗已移除（独立推进，不再同步切局） -->
+
+  <!-- 最终结算弹窗 -->
+    <view wx:if="{{showFinal}}" class="mask">
+      <view class="modal-card animate-pop final-card">
+        <view class="modal-emoji animate-bounce">{{finalInfo.result === '胜利' ? '🏆' : (finalInfo.result === '平局' ? '🤝' : '😢')}}</view>
+        <view class="modal-title big">{{finalInfo.result}}</view>
+        <view class="final-totals">
+          <view class="final-total">我：{{finalInfo.myTotalText}}</view>
+          <view class="final-total">对手：{{finalInfo.oppTotalText}}</view>
+        </view>
+        <view class="rounds-detail">
+          <view class="detail-header">
+            <text class="dh-round">局</text>
+            <text class="dh-time">我</text>
+            <text class="dh-time">对手</text>
+          </view>
+          <view wx:for="{{finalInfo.roundsDetail}}" wx:key="round" class="detail-row">
+            <text class="dr-round">{{item.round}}</text>
+            <text class="dr-time">{{item.myTimeText}}</text>
+            <text class="dr-time">{{item.oppTimeText}}</text>
+          </view>
+        </view>
+        <button class="btn-primary modal-btn" bindtap="goHome">返回首页</button>
+      </view>
+    </view>
+</view>

@@ -1,0 +1,80 @@
+<!-- pages/ranking/ranking.wxml -->
+<view class="root theme-{{colorMode}} page-bg">
+  <view class="ranking-container">
+    <view class="ranking-title">🏆 玩家排行</view>
+    <view class="ranking-sub">按总通关数排序，关数相同用时少者靠前</view>
+
+    <!-- 本地模式提示 -->
+    <view wx:if="{{isLocalMode}}" class="local-card card">
+      <view class="local-emoji">☁️</view>
+      <view class="local-text">排行榜需要开通云开发才能查看全部玩家数据</view>
+      <button class="btn-primary local-btn" bindtap="showCloudTip">查看开通方法</button>
+    </view>
+
+    <!-- 加载中 -->
+    <view wx:elif="{{loading}}" class="loading-box">
+      <view class="loading-text">加载中...</view>
+    </view>
+
+    <!-- 加载失败 -->
+    <view wx:elif="{{error}}" class="error-box">
+      <view class="error-text">{{error}}</view>
+      <button class="btn-primary retry-btn" bindtap="loadRanking">重试</button>
+    </view>
+
+    <!-- 排行榜列表 -->
+    <block wx:else>
+      <!-- 我的排名（置顶展示） -->
+      <view wx:if="{{myRank}}" class="my-rank-card card">
+        <view class="my-rank-label">我的排名</view>
+        <view class="my-rank-row">
+          <view class="rank-num rank-{{myRank.rank <= 3 ? myRank.rank : 'normal'}}">第{{myRank.rank}}名</view>
+          <view class="my-rank-stats">
+            <view class="stat-item">
+              <text class="stat-num">{{myRank.totalLevels}}</text>
+              <text class="stat-label">总关数</text>
+            </view>
+            <view class="stat-item">
+              <text class="stat-num">{{myRank.totalTimeText}}</text>
+              <text class="stat-label">总用时</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 表头 -->
+      <view class="rank-header">
+        <view class="col-rank">名次</view>
+        <view class="col-player">玩家</view>
+        <view class="col-levels">关数</view>
+        <view class="col-time">总用时</view>
+      </view>
+
+      <!-- 排行列表 -->
+      <view wx:if="{{rankings.length === 0}}" class="empty">暂无排行数据，快去通关霸榜吧～</view>
+      <view class="rank-list">
+        <block wx:for="{{rankings}}" wx:key="rank">
+          <view class="rank-row {{item.isMe ? 'rank-row-me' : ''}} {{index % 2 === 0 ? 'row-even' : 'row-odd'}}">
+            <view class="col-rank">
+              <text wx:if="{{item.rank === 1}}" class="medal">🥇</text>
+              <text wx:elif="{{item.rank === 2}}" class="medal">🥈</text>
+              <text wx:elif="{{item.rank === 3}}" class="medal">🥉</text>
+              <text wx:else class="rank-num-text">{{item.rank}}</text>
+            </view>
+            <view class="col-player">
+              <image wx:if="{{item.avatarUrl}}" class="player-avatar" src="{{item.avatarUrl}}" mode="aspectFill"></image>
+              <view wx:else class="player-avatar player-avatar-placeholder">👤</view>
+              <text class="player-name">{{item.nickName}}</text>
+            </view>
+            <view class="col-levels">{{item.totalLevels}}</view>
+            <view class="col-time">{{item.totalTimeText}}</view>
+          </view>
+        </block>
+      </view>
+    </block>
+
+    <view class="ranking-actions">
+      <button class="btn-secondary ranking-btn" bindtap="goHome">返回首页</button>
+    </view>
+  </view>
+</view>

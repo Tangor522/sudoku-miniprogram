@@ -1,0 +1,9 @@
+[
+  { "name": "login", "path": "../cloudfunctions/login" },
+  { "name": "saveProgress", "path": "../cloudfunctions/saveProgress" },
+  { "name": "getRanking", "path": "../cloudfunctions/getRanking" },
+  { "name": "pkMatch", "path": "../cloudfunctions/pkMatch" },
+  { "name": "pkState", "path": "../cloudfunctions/pkState" },
+  { "name": "pkSubmit", "path": "../cloudfunctions/pkSubmit" },
+  { "name": "pkRecord", "path": "../cloudfunctions/pkRecord" }
+]

@@ -1,0 +1,11 @@
+<view class="root theme-{{colorMode}} page-bg">
+  <view class="stats-container">
+    <view class="stats-head"><view class="back" bindtap="goHome">‹</view><view><text class="eyebrow">MY JOURNEY</text><text class="stats-title">成长记录</text></view><view class="head-space"></view></view>
+    <view class="mode-tabs"><view class="mode-tab {{gameMode === '4x4' ? 'active' : ''}}" data-mode="4x4" bindtap="switchMode">4×4</view><view class="mode-tab {{gameMode === '6x6' ? 'active' : ''}}" data-mode="6x6" bindtap="switchMode">6×6</view><view class="mode-tab {{gameMode === '9x9' ? 'active' : ''}}" data-mode="9x9" bindtap="switchMode">9×9</view></view>
+    <view class="summary-card"><view><text class="summary-label">已完成</text><text class="summary-value">{{records.length}} <text>关</text></text></view><view class="summary-mark">↗</view></view>
+    <view class="list-head"><text>闯关明细</text><text>最佳成绩</text></view>
+    <view wx:if="{{records.length === 0}}" class="empty"><view class="empty-mark">✦</view><text class="empty-title">新的旅程正等着你</text><text class="empty-sub">完成第一关后，成长足迹会出现在这里</text><button class="start-button" bindtap="goGame">开始挑战</button></view>
+    <view wx:else class="record-list"><view wx:for="{{records}}" wx:key="level" class="record-row"><view class="level-badge">{{item.level}}</view><view class="record-copy"><text class="record-title">第 {{item.level}} 关</text><text class="record-date">完成于 {{item.completed}}</text></view><text class="record-time">{{item.usedTimeText}}</text></view></view>
+    <button wx:if="{{records.length > 0}}" class="start-button bottom" bindtap="goGame">继续挑战</button>
+  </view>
+</view>

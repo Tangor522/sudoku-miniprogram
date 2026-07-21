@@ -1,0 +1,9 @@
+[
+  { "name": "login", "runtime": "Nodejs16.13", "timeout": 10, "memorySize": 256 },
+  { "name": "saveProgress", "runtime": "Nodejs16.13", "timeout": 10, "memorySize": 256 },
+  { "name": "getRanking", "runtime": "Nodejs16.13", "timeout": 10, "memorySize": 256 },
+  { "name": "pkMatch", "runtime": "Nodejs16.13", "timeout": 20, "memorySize": 256 },
+  { "name": "pkState", "runtime": "Nodejs16.13", "timeout": 10, "memorySize": 256 },
+  { "name": "pkSubmit", "runtime": "Nodejs16.13", "timeout": 20, "memorySize": 256 },
+  { "name": "pkRecord", "runtime": "Nodejs16.13", "timeout": 10, "memorySize": 256 }
+]
