@@ -26,6 +26,7 @@ Page({
     // 我的棋盘
     grid: [],
     gridRows: [],
+    solution: [],
     selectedCell: null,
     timer: 0,
     timerText: '00:00.0',
@@ -126,6 +127,7 @@ Page({
       return;
     }
     var puzzle = match.rounds[myRoundIdx].puzzle;
+    var solution = sudoku.solvePuzzle(puzzle, match.mode);
     var size = puzzle.length;
     var numbers = [];
     for (var n = 1; n <= size; n++) numbers.push(n);
@@ -165,6 +167,7 @@ Page({
       gamePhase: phase,
       grid: myGrid,
       gridRows: this.buildRows(myGrid, null, match.mode),
+      solution: solution,
       myTotalTime: myState.totalTime || 0,
       oppTotalTime: oppState.totalTime || 0,
       myTotalTimeText: timerUtil.formatStopwatch(myState.totalTime || 0),
@@ -186,8 +189,8 @@ Page({
   buildRows: function (grid, sel, mode) {
     return grid.map(function (row, r) {
       return row.map(function (cell, c) {
-        var borderLeft = mode === '4x4' ? c === 2 : c === 3;
-        var borderTop = mode === '4x4' ? r === 2 : (r === 2 || r === 4);
+        var borderLeft = mode === '4x4' ? c === 2 : (mode === '6x6' ? c === 3 : (c === 3 || c === 6));
+        var borderTop = mode === '4x4' ? r === 2 : (mode === '6x6' ? (r === 2 || r === 4) : (r === 3 || r === 6));
         return {
           value: cell.value, fixed: cell.fixed, error: cell.error,
           row: r, col: c,
@@ -370,10 +373,26 @@ Page({
 
   submitAnswer: function () {
     var that = this;
-    var checker = this.data.mode === '4x4' ? sudoku.check4x4 : sudoku.check6x6;
+    var checkers = { '4x4': sudoku.check4x4, '6x6': sudoku.check6x6, '9x9': sudoku.check9x9 };
+    var checker = checkers[this.data.mode];
     var result = checker(this.data.grid);
-    if (!result.isComplete) { wx.showToast({ title: '还没填完哦', icon: 'none' }); return; }
-    if (result.hasError) { wx.showToast({ title: '有错误，请检查', icon: 'none' }); return; }
+    if (!result.isComplete) { wx.showToast({ title: '请先填写完整', icon: 'none' }); return; }
+    var solution = this.data.solution;
+    var hasWrongAnswer = false;
+    var errorGrid = this.data.grid.map(function (row, r) {
+      return row.map(function (cell, c) {
+        var isWrong = !cell.fixed && cell.value !== solution[r][c];
+        if (isWrong) hasWrongAnswer = true;
+        return { value: cell.value, fixed: cell.fixed, error: isWrong };
+      });
+    });
+    if (hasWrongAnswer) {
+      this.setData({
+        grid: errorGrid,
+        gridRows: this.buildRows(errorGrid, this.data.selectedCell, this.data.mode)
+      });
+      return;
+    }
 
     var numGrid = this.data.grid.map(function (r) { return r.map(function (c) { return c.value; }); });
     wx.showLoading({ title: '提交中...' });

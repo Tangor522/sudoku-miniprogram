@@ -85,15 +85,11 @@ Page({
     }, 1000);
   },
 
-  goHome: function () {
-    wx.navigateBack({ delta: 1 });
-  },
-
-  // 跳转到开通云开发指引
+  // 说明在线排行状态
   showCloudTip: function () {
     wx.showModal({
-      title: '需要云开发',
-      content: '排行榜需要开通云开发才能查看全部玩家。请参考 README.md 的「模式 B」开通云开发并部署 getRanking 云函数。',
+      title: '排行榜暂不可用',
+      content: '当前处于本地模式，连接在线服务后即可查看全部玩家排名。',
       showCancel: false
     });
   }

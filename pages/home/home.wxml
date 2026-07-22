@@ -2,33 +2,74 @@
   <view class="glow glow-one"></view><view class="glow glow-two"></view>
   <view class="home-container">
     <view class="header">
-      <view class="brand-mark">S</view>
-      <view class="brand-copy"><text class="brand-eyebrow">DAILY BRAIN TRAINING</text><text class="brand-title">数独小勇士</text></view>
-      <view class="avatar-wrap" bindtap="handleLogout">
+      <view class="brand-mark" aria-label="数独小勇士标志">
+        <view></view><view></view><view></view><view></view>
+      </view>
+      <view class="brand-copy">
+        <text class="brand-title">数独小勇士</text>
+        <text class="brand-eyebrow">每天进步一小格</text>
+      </view>
+      <view class="avatar-wrap" aria-label="退出登录" bindtap="handleLogout">
         <image wx:if="{{user.avatarUrl}}" class="avatar" src="{{user.avatarUrl}}" mode="aspectFill"></image>
-        <view wx:else class="avatar avatar-text">{{firstLetter}}</view><view class="online-dot"></view>
+        <view wx:else class="avatar avatar-text">{{firstLetter}}</view>
+        <view class="online-dot"></view>
       </view>
     </view>
 
     <view class="hero-card">
-      <view class="hero-decoration">✦</view>
-      <view class="hero-copy"><text class="hero-kicker">欢迎回来，{{user.nickName || '小勇士'}}</text><text class="hero-title">今天也让大脑\n闪闪发光吧</text><text class="hero-sub">每天一道题，专注力慢慢长大</text></view>
-      <view class="hero-orbit"><view class="hero-core">✦</view><view class="orbit-dot one"></view><view class="orbit-dot two"></view></view>
+      <view class="hero-copy">
+        <text class="hero-kicker">欢迎回来，{{user.nickName || '小勇士'}}</text>
+        <text class="hero-title">今天，从一格开始</text>
+        <text class="hero-sub">专注思考，完成属于你的数独挑战</text>
+      </view>
+      <view class="hero-board" aria-hidden="true">
+        <view wx:for="{{[1,2,3,4,5,6,7,8,9]}}" wx:key="*this" class="hero-cell {{item === 1 || item === 5 || item === 9 ? 'active' : ''}}"></view>
+      </view>
     </view>
 
-    <view class="section-head"><text class="section-title">选择挑战</text><text class="section-sub">由浅入深 · 100 关成长路线</text></view>
+    <view class="section-head">
+      <text class="section-title">选择挑战</text>
+      <text class="section-sub">循序渐进 · 每种模式 100 关</text>
+    </view>
     <view class="mode-grid">
-      <view class="mode-card mode-four" bindtap="go4x4"><view class="mode-top"><view class="mode-icon">4</view><view class="difficulty easy">启蒙</view></view><text class="mode-title">四宫格</text><text class="mode-desc">认识规则 · 建立信心</text><view class="mode-action">开始挑战 <text>→</text></view></view>
-      <view class="mode-card mode-six" bindtap="go6x6"><view class="mode-top"><view class="mode-icon">6</view><view class="difficulty medium">进阶</view></view><text class="mode-title">六宫格</text><text class="mode-desc">训练推理 · 提升专注</text><view class="mode-action">继续成长 <text>→</text></view></view>
-      <view class="mode-card mode-nine" bindtap="go9x9"><view class="mode-top"><view class="mode-icon">9</view><view class="difficulty hard">标准</view></view><text class="mode-title">九宫格</text><text class="mode-desc">经典数独 · 唯一解挑战</text><view class="mode-action">挑战自我 <text>→</text></view></view>
+      <view class="mode-card" bindtap="go4x4">
+        <view class="mode-top"><view class="mode-icon">4×4</view><view class="difficulty easy">启蒙</view></view>
+        <text class="mode-title">四宫格</text><text class="mode-desc">认识规则，轻松入门</text><view class="mode-action">开始挑战</view>
+      </view>
+      <view class="mode-card" bindtap="go6x6">
+        <view class="mode-top"><view class="mode-icon">6×6</view><view class="difficulty medium">进阶</view></view>
+        <text class="mode-title">六宫格</text><text class="mode-desc">训练推理，提升专注</text><view class="mode-action">继续成长</view>
+      </view>
+      <view class="mode-card mode-nine" bindtap="go9x9">
+        <view class="mode-top"><view class="mode-icon">9×9</view><view class="difficulty hard">经典</view></view>
+        <text class="mode-title">九宫格</text><text class="mode-desc">标准数独，唯一解挑战</text><view class="mode-action">挑战自我</view>
+      </view>
     </view>
 
+    <view class="section-head tools-head"><text class="section-title">更多</text></view>
     <view class="quick-row">
-      <view class="quick-card" bindtap="goStats"><view class="quick-icon stats">↗</view><view><text class="quick-title">成长记录</text><text class="quick-sub">看看每次进步</text></view></view>
-      <view class="quick-card" bindtap="goRanking"><view class="quick-icon rank">♛</view><view><text class="quick-title">勇士排行</text><text class="quick-sub">和大家比一比</text></view></view>
+      <view class="quick-card" bindtap="goStats">
+        <view class="quick-icon chart-icon"><view></view><view></view><view></view></view>
+        <view class="quick-copy"><text class="quick-title">成长记录</text><text class="quick-sub">查看每次进步</text></view>
+      </view>
+      <view class="quick-card" bindtap="goRanking">
+        <view class="quick-icon medal-icon"><view>1</view></view>
+        <view class="quick-copy"><text class="quick-title">勇士排行</text><text class="quick-sub">看看你的名次</text></view>
+      </view>
     </view>
-    <view class="pk-card" bindtap="goPk"><view class="pk-icon">⚔</view><view class="pk-copy"><text class="quick-title">双人在线对战</text><text class="quick-sub">邀请伙伴，来一场专注力较量</text></view><view class="pk-arrow">→</view></view>
+    <view class="pk-card" bindtap="goPk">
+      <view class="pk-icon">VS</view>
+      <view class="pk-copy"><text class="quick-title">双人在线对战</text><text class="quick-sub">和伙伴公平完成同一组题</text></view>
+      <view class="chevron"></view>
+    </view>
 
-    <view class="theme-bar"><text class="theme-label">界面色彩</text><view class="theme-options"><view class="theme-dot pink {{colorMode === 'normal' ? 'active' : ''}}" data-mode="normal" bindtap="setColorMode"></view><view class="theme-dot green {{colorMode === 'soft' ? 'active' : ''}}" data-mode="soft" bindtap="setColorMode"></view><view class="theme-dot amber {{colorMode === 'eye-care' ? 'active' : ''}}" data-mode="eye-care" bindtap="setColorMode"></view></view></view>
+    <view class="theme-bar">
+      <view><text class="theme-label">界面主题</text><text class="theme-value">选择喜欢的专注色</text></view>
+      <view class="theme-options">
+        <view class="theme-choice {{colorMode === 'normal' ? 'active' : ''}}" data-mode="normal" bindtap="setColorMode"><view class="theme-dot pink"></view></view>
+        <view class="theme-choice {{colorMode === 'soft' ? 'active' : ''}}" data-mode="soft" bindtap="setColorMode"><view class="theme-dot green"></view></view>
+        <view class="theme-choice {{colorMode === 'eye-care' ? 'active' : ''}}" data-mode="eye-care" bindtap="setColorMode"><view class="theme-dot amber"></view></view>
+      </view>
+    </view>
   </view>
 </view>

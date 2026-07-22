@@ -30,7 +30,9 @@ exports.main = async (event) => {
     if (action === 'syncProgress') {
       if (match.status !== 'playing') return { ok: false, error: '对局已结束' };
       var grid = event.grid;
-      var size = match.mode === '4x4' ? 4 : 6;
+      var sizeMap = { '4x4': 4, '6x6': 6, '9x9': 9 };
+      var size = sizeMap[match.mode];
+      if (!size) return { ok: false, error: '不支持的对战模式' };
       if (!Array.isArray(grid) || grid.length !== size || grid.some(function (row) {
         return !Array.isArray(row) || row.length !== size || row.some(function (v) { return !Number.isInteger(v) || v < 0 || v > size; });
       })) return { ok: false, error: '棋盘数据无效' };
@@ -53,6 +55,7 @@ exports.main = async (event) => {
     // === 标记准备就绪 ===
     if (action === 'setReady') {
       if (match.status !== 'playing' && match.status !== 'matching') return { ok: false, error: '对局状态异常' };
+      var wasReady = !!((match.playerStates['' + slot] || {}).ready);
       var readyUpd = {};
       readyUpd['playerStates.' + slot + '.ready'] = true;
       readyUpd['updatedAt'] = Date.now();
@@ -63,6 +66,14 @@ exports.main = async (event) => {
       var fm = freshMatch.data;
       var myReady = (fm.playerStates['' + slot] || {}).ready;
       var oppReady = (fm.playerStates['' + oppSlot] || {}).ready;
+      if (!wasReady && myReady && oppReady) {
+        // 双方都准备完成的这一刻才正式开始首局计时，排除等待对手的时间。
+        var startAt = Date.now();
+        var startUpd = { updatedAt: startAt };
+        startUpd['playerStates.0.roundStartTimes'] = [startAt];
+        startUpd['playerStates.1.roundStartTimes'] = [startAt];
+        await col.doc(matchId).update({ data: startUpd });
+      }
       return { ok: true, myReady: myReady, oppReady: oppReady, bothReady: myReady && oppReady };
     }
 

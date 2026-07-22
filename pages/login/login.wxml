@@ -1,47 +1,40 @@
-<!-- pages/login/login.wxml -->
 <view class="root theme-{{colorMode}} page-bg">
+  <view class="login-orb orb-one"></view><view class="login-orb orb-two"></view>
   <view class="login-container">
-    <!-- Logo -->
     <view class="logo">
-      <text class="logo-emoji">🦄</text>
+      <view class="logo-mark"><view></view><view></view><view></view><view></view></view>
       <text class="logo-title">数独小勇士</text>
+      <text class="logo-sub">专注思考，每天进步一小格</text>
     </view>
 
-    <!-- 静默登录中 -->
     <view wx:if="{{silencing}}" class="silent-box">
-      <view class="silent-spinner"></view>
-      <view class="silent-text">正在登录...</view>
+      <view class="silent-spinner"></view><view class="silent-text">正在准备你的挑战</view>
     </view>
 
-    <!-- 静默失败，展示手动登录按钮 -->
-    <view wx:elif="{{silentFail && !showProfile}}" class="login-box">
-      <view class="login-desc">登录服务暂时不可用，请重试</view>
-      <button class="btn-primary login-btn" bindtap="handleLogin">
-        <text class="btn-icon">🔐</text> 重新登录
-      </button>
-      <view wx:if="{{isLocalMode}}" class="local-tip">
-        提示：未开通云开发，进度仅保存在本机
-      </view>
+    <view wx:elif="{{silentFail && !showProfile}}" class="login-box panel">
+      <view class="panel-title">暂时无法登录</view>
+      <view class="login-desc">请检查网络后再试一次</view>
+      <button class="btn-primary login-btn" bindtap="handleLogin">重新登录</button>
+      <view wx:if="{{isLocalMode}}" class="local-tip">当前进度仅保存在本机</view>
     </view>
 
-    <!-- 资料补全（首次登录后显示） -->
-    <view wx:if="{{showProfile}}" class="profile-box">
-      <view class="profile-title">完善资料</view>
-
+    <view wx:if="{{showProfile}}" class="profile-box panel">
+      <view class="profile-title">认识一下你</view>
+      <view class="profile-sub">设置头像和昵称，开始今天的挑战</view>
       <button class="avatar-wrapper" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
         <image wx:if="{{avatarUrl}}" class="avatar" src="{{avatarUrl}}" mode="aspectFill"></image>
-        <view wx:else class="avatar avatar-placeholder">👤</view>
-        <view class="avatar-tip">点击选择头像</view>
+        <view wx:else class="avatar avatar-placeholder"><view class="avatar-head"></view><view class="avatar-body"></view></view>
+        <view class="avatar-edit">＋</view>
       </button>
+      <view class="avatar-tip">点击选择头像</view>
 
-      <view class="nick-row">
+      <view class="nick-field">
         <text class="nick-label">昵称</text>
-        <input type="nickname" class="nick-input" placeholder="请输入昵称"
-               value="{{nickName}}" bindblur="onNickBlur" bindinput="onNickInput" />
+        <input type="nickname" class="nick-input" placeholder="请输入昵称" value="{{nickName}}" bindblur="onNickBlur" bindinput="onNickInput" />
       </view>
 
       <button class="btn-primary save-btn" bindtap="saveProfile">保存并进入</button>
-      <view class="skip-btn" bindtap="skipProfile">跳过，稍后设置</view>
+      <view class="skip-btn" bindtap="skipProfile">稍后再设置</view>
     </view>
   </view>
 </view>

@@ -13,7 +13,12 @@ function genRoomCode() {
 
 // 生成题目数组（双方共用同一组题）
 function genRounds(mode, totalRounds) {
-  var gen = mode === '4x4' ? sudoku.generate4x4Puzzle : sudoku.generate6x6Puzzle;
+  var generators = {
+    '4x4': sudoku.generate4x4Puzzle,
+    '6x6': sudoku.generate6x6Puzzle,
+    '9x9': sudoku.generate9x9Puzzle
+  };
+  var gen = generators[mode];
   var rounds = [];
   for (var i = 0; i < totalRounds; i++) {
     rounds.push({ puzzle: gen(20) });
@@ -43,7 +48,7 @@ exports.main = async (event) => {
   var { action, mode, totalRounds, roomCode } = event;
   const col = db.collection('matches');
 
-  if ((action === 'randomMatch' || action === 'createRoom') && mode !== '4x4' && mode !== '6x6') {
+  if ((action === 'randomMatch' || action === 'createRoom') && ['4x4', '6x6', '9x9'].indexOf(mode) === -1) {
     return { ok: false, error: '不支持的对战模式' };
   }
 
@@ -54,6 +59,8 @@ exports.main = async (event) => {
   try {
     // === 随机匹配 ===
     if (action === 'randomMatch') {
+      var joiningProfileRes = await db.collection('users').where({ _openid: openid }).get();
+      var joiningProfile = joiningProfileRes.data[0] || {};
       var waiting = await col.where({
         status: 'matching', matchType: 'random', mode: mode, totalRounds: totalRounds
       }).get();
@@ -74,7 +81,7 @@ exports.main = async (event) => {
               data: {
                 players: db.command.set([
                   match.players[0],
-                  { openid: openid, nickName: '', avatarUrl: '', slot: 1, lastActive: now, connected: true }
+                  { openid: openid, nickName: joiningProfile.nickName || '', avatarUrl: joiningProfile.avatarUrl || '', slot: 1, lastActive: now, connected: true }
                 ]),
                 rounds: rounds,
                 playerStates: playerStates,
@@ -149,6 +156,8 @@ exports.main = async (event) => {
       var room = rooms.data[0];
       if (room.players.length !== 1) return { ok: false, error: '房间已满' };
       if (room.players[0].openid === openid) return { ok: false, error: '不能加入自己的房间' };
+      var joiningProfileRes2 = await db.collection('users').where({ _openid: openid }).get();
+      var joiningProfile2 = joiningProfileRes2.data[0] || {};
 
       var joinResult = await db.runTransaction(async transaction => {
         var doc = await transaction.collection('matches').doc(room._id).get();
@@ -163,7 +172,7 @@ exports.main = async (event) => {
           data: {
             players: db.command.set([
               match.players[0],
-              { openid: openid, nickName: '', avatarUrl: '', slot: 1, lastActive: now3, connected: true }
+              { openid: openid, nickName: joiningProfile2.nickName || '', avatarUrl: joiningProfile2.avatarUrl || '', slot: 1, lastActive: now3, connected: true }
             ]),
             rounds: rounds, playerStates: playerStates,
             status: 'playing', updatedAt: now3

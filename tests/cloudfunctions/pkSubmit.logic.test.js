@@ -76,6 +76,8 @@ describe('云函数 pkSubmit', function () {
     expect(myRec.result).toBe('win');
     expect(oppRec.result).toBe('lose');
     expect(myRec.roundsDetail.length).toBe(1);
+    expect(myRec.roundsDetail[0].myTime).toBeGreaterThan(0);
+    expect(mockStore.matches[0].playerStates['0'].roundTimes[0]).toBeGreaterThan(0);
   });
 
   test('多局累计用时应正确累加', async function () {

@@ -54,7 +54,9 @@ exports.main = async (event) => {
 
       // 校验答案正确
       var cellGrid = toCellGrid(grid);
-      var checker = match.mode === '4x4' ? sudoku.check4x4 : sudoku.check6x6;
+      var checkers = { '4x4': sudoku.check4x4, '6x6': sudoku.check6x6, '9x9': sudoku.check9x9 };
+      var checker = checkers[match.mode];
+      if (!checker) throw new Error('不支持的对战模式');
       var checkResult = checker(cellGrid);
       if (!checkResult.isComplete || checkResult.hasError) {
         return { ok: false, reason: 'wrong', message: '答案不正确，请继续' };
@@ -67,8 +69,10 @@ exports.main = async (event) => {
       var now = Date.now();
       var updates = {};
 
-      // 记录本局用时
-      updates['playerStates.' + slot + '.roundTimes.' + roundIdx] = usedTime;
+      // 整体替换用时数组，避免云数据库对数组下标的局部更新在最后一局丢值。
+      var newRoundTimes = (myState.roundTimes || []).slice();
+      newRoundTimes[roundIdx] = usedTime;
+      updates['playerStates.' + slot + '.roundTimes'] = db.command.set(newRoundTimes);
 
       // 更新累计用时
       var newTotalTime = (myState.totalTime || 0) + usedTime;
@@ -146,7 +150,7 @@ exports.main = async (event) => {
               opponentNickName: opp.nickName || '匿名玩家',
               opponentAvatarUrl: opp.avatarUrl || '',
               totalTime: myTotal,
-              roundsDetail: (pState.roundTimes || []).map(function (t, idx) {
+              roundsDetail: (s === slot ? newRoundTimes : (pState.roundTimes || [])).map(function (t, idx) {
                 return { round: idx + 1, myTime: t };
               }),
               matchType: match.matchType,

@@ -31,4 +31,36 @@ function check6x6(grid) {
   return { hasError: hasError, errorCells: errorCells, isComplete: isComplete };
 }
 
-module.exports = { check4x4: check4x4, check6x6: check6x6 };
+function check9x9(grid) {
+  var errorCells = {}; var hasError = false;
+  function markGroup(cells) {
+    var seen = {};
+    cells.forEach(function (pos) {
+      var value = grid[pos.row][pos.col].value;
+      if (value === 0) return;
+      if (seen[value]) {
+        errorCells[pos.row + '-' + pos.col] = true;
+        errorCells[seen[value].row + '-' + seen[value].col] = true;
+        hasError = true;
+      } else seen[value] = pos;
+    });
+  }
+  for (var r = 0; r < 9; r++) {
+    var rowCells = []; for (var c = 0; c < 9; c++) rowCells.push({ row: r, col: c });
+    markGroup(rowCells);
+  }
+  for (var c2 = 0; c2 < 9; c2++) {
+    var colCells = []; for (var r2 = 0; r2 < 9; r2++) colCells.push({ row: r2, col: c2 });
+    markGroup(colCells);
+  }
+  for (var br = 0; br < 3; br++) for (var bc = 0; bc < 3; bc++) {
+    var box = [];
+    for (var rr = 0; rr < 3; rr++) for (var cc = 0; cc < 3; cc++) box.push({ row: br * 3 + rr, col: bc * 3 + cc });
+    markGroup(box);
+  }
+  var isComplete = true;
+  for (var row = 0; row < 9; row++) for (var col = 0; col < 9; col++) if (grid[row][col].value === 0) isComplete = false;
+  return { hasError: hasError, errorCells: errorCells, isComplete: isComplete };
+}
+
+module.exports = { check4x4: check4x4, check6x6: check6x6, check9x9: check9x9 };

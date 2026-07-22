@@ -1,59 +1,57 @@
-<!-- pages/pk_lobby/pk_lobby.wxml -->
 <view class="root theme-{{colorMode}} page-bg">
   <view class="lobby-container">
-    <view class="lobby-title">⚔️ 在线 PK</view>
+    <view class="lobby-head">
+      <view class="versus-mark">VS</view>
+      <view><text class="lobby-title">在线对战</text><text class="lobby-sub">同题竞技，先完成全部局数获胜</text></view>
+    </view>
 
-    <!-- 模式选择 -->
     <view class="card section">
-      <view class="section-label">选择模式</view>
+      <view class="section-label">选择棋盘</view>
       <view class="opt-row">
-        <view class="opt-btn {{mode === '4x4' ? 'active' : ''}}" data-mode="4x4" bindtap="setMode">📚 四宫格</view>
-        <view class="opt-btn {{mode === '6x6' ? 'active' : ''}}" data-mode="6x6" bindtap="setMode">🎮 六宫格</view>
+        <view class="opt-btn {{mode === '4x4' ? 'active' : ''}}" data-mode="4x4" bindtap="setMode"><text>4×4</text><text class="opt-name">四宫格</text></view>
+        <view class="opt-btn {{mode === '6x6' ? 'active' : ''}}" data-mode="6x6" bindtap="setMode"><text>6×6</text><text class="opt-name">六宫格</text></view>
+        <view class="opt-btn {{mode === '9x9' ? 'active' : ''}}" data-mode="9x9" bindtap="setMode"><text>9×9</text><text class="opt-name">九宫格</text></view>
       </view>
     </view>
 
-    <!-- 局数选择 -->
-    <view class="card section">
-      <view class="section-label">选择局数（1-5局）</view>
+    <view class="card section rounds-section">
+      <view><text class="section-label block">对战局数</text><text class="section-hint">可选择 1–5 局</text></view>
       <view class="rounds-input-row">
-        <view class="rounds-minus" bindtap="roundsMinus">－</view>
+        <view class="round-control" bindtap="roundsMinus">－</view>
         <input class="rounds-input" type="number" value="{{totalRounds}}" bindinput="onRoundsInput" maxlength="1" />
-        <view class="rounds-plus" bindtap="roundsPlus">＋</view>
-        <text class="rounds-unit">局</text>
+        <view class="round-control" bindtap="roundsPlus">＋</view>
       </view>
     </view>
 
-    <!-- 错误提示 -->
     <view wx:if="{{error}}" class="error-tip">{{error}}</view>
 
-    <!-- 匹配中 -->
-    <view wx:if="{{matching}}" class="matching-box">
+    <view wx:if="{{matching}}" class="matching-box card">
       <view class="matching-spinner"></view>
-      <view class="matching-text">{{roomCode ? '等待好友加入...' : '正在匹配对手...'}}</view>
-      <view wx:if="{{roomCode}}" class="room-code-display">房间号：{{roomCode}}</view>
-      <button class="btn-secondary cancel-btn" bindtap="cancelMatching">取消</button>
+      <view class="matching-text">{{roomCode ? '等待好友加入' : '正在寻找对手'}}</view>
+      <view class="matching-sub">{{roomCode ? '分享房间号，对方即可加入' : '请保持页面打开'}}</view>
+      <view wx:if="{{roomCode}}" class="room-code-display">{{roomCode}}</view>
+      <button class="btn-secondary cancel-btn" bindtap="cancelMatching">取消匹配</button>
     </view>
 
-    <!-- 操作按钮 -->
     <view wx:if="{{!matching && !showRoomPanel}}" class="actions">
-      <button class="btn-primary action-btn" bindtap="startRandomMatch">🎯 随机匹配</button>
-      <view class="action-row">
-        <button class="btn-secondary action-btn-half" bindtap="createRoom">🏠 创建房间</button>
-        <button class="btn-accent action-btn-half" bindtap="joinRoom">🔑 加入房间</button>
+      <button class="btn-primary action-btn" bindtap="startRandomMatch">随机匹配</button>
+      <view class="friend-divider"><view></view><text>好友房间</text><view></view></view>
+      <view class="join-input-row">
+        <input class="join-input" placeholder="输入 6 位房间号" maxlength="6" value="{{inputRoomCode}}" bindinput="onRoomInput" />
       </view>
-      <view class="join-input-row" wx:if="{{!matching}}">
-        <input class="join-input" placeholder="输入6位房间号" maxlength="6"
-               value="{{inputRoomCode}}" bindinput="onRoomInput" />
+      <view class="action-row">
+        <button class="btn-secondary action-btn-half" bindtap="createRoom">创建房间</button>
+        <button class="btn-primary action-btn-half" bindtap="joinRoom">加入房间</button>
       </view>
     </view>
 
-    <!-- 房间号展示（创建房间后） -->
     <view wx:if="{{showRoomPanel}}" class="room-panel card">
+      <view class="room-ready-mark"><view></view></view>
       <view class="room-panel-title">房间已创建</view>
       <view class="room-code-big">{{roomCode}}</view>
-      <view class="room-tip">将房间号分享给好友，对方输入即可加入</view>
-      <button class="btn-primary" open-type="share">📤 分享给好友</button>
-      <button class="btn-secondary close-room-btn" bindtap="closeRoomPanel">关闭房间</button>
+      <view class="room-tip">把房间号发给好友，等待对方加入</view>
+      <button class="btn-primary room-btn" open-type="share">分享给好友</button>
+      <button class="btn-secondary room-btn close-room-btn" bindtap="closeRoomPanel">关闭房间</button>
     </view>
   </view>
 </view>

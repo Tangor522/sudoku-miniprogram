@@ -42,7 +42,9 @@ async function navigatePage(miniProgram, route, selector) {
 
 async function run() {
   if (!fs.existsSync(SHOTS_DIR)) fs.mkdirSync(SHOTS_DIR, { recursive: true });
-  const miniProgram = await automator.launch({ cliPath: CLI_PATH, projectPath: PROJECT_PATH, trustProject: true });
+  const miniProgram = process.env.AUTOMATOR_WS
+    ? await automator.connect({ wsEndpoint: process.env.AUTOMATOR_WS })
+    : await automator.launch({ cliPath: CLI_PATH, projectPath: PROJECT_PATH, trustProject: true });
   try {
     miniProgram.on('console', msg => console.log('[小程序 console]', msg));
     miniProgram.on('exception', err => console.error('[小程序 exception]', err));

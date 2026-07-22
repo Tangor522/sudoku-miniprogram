@@ -21,6 +21,26 @@ describe('云函数 pkMatch', function () {
 
   // === 随机匹配：无人等待时新建房间 ===
   describe('action=randomMatch', function () {
+    test('后加入玩家应带入昵称和头像', async function () {
+      mockStore.users.push({ _openid: 'test-openid-002', nickName: '小明', avatarUrl: 'cloud://avatar.png' });
+      asUser('test-openid-001');
+      await handler({ action: 'randomMatch', mode: '4x4', totalRounds: 1 });
+      asUser('test-openid-002');
+      var res = await handler({ action: 'randomMatch', mode: '4x4', totalRounds: 1 });
+      expect(res.match.players[1].nickName).toBe('小明');
+      expect(res.match.players[1].avatarUrl).toBe('cloud://avatar.png');
+    });
+
+    test('应支持 9x9 PK 并生成唯一解题目', async function () {
+      asUser('test-openid-001');
+      await handler({ action: 'randomMatch', mode: '9x9', totalRounds: 1 });
+      asUser('test-openid-002');
+      var res = await handler({ action: 'randomMatch', mode: '9x9', totalRounds: 1 });
+      expect(res.ok).toBe(true);
+      expect(res.match.rounds[0].puzzle.length).toBe(9);
+      expect(res.match.rounds[0].puzzle.every(function (row) { return row.length === 9; })).toBe(true);
+    });
+
     test('无人等待时应创建等待房间（slot 0, status waiting）', async function () {
       var res = await handler({ action: 'randomMatch', mode: '4x4', totalRounds: 3 });
       expect(res.ok).toBe(true);

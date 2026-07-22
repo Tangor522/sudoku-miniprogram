@@ -33,7 +33,7 @@ function createGamePage(options) {
   return {
     data: {
       colorMode: 'normal', mode: mode, modeTitle: options.title,
-      grid: [], gridRows: [], selectedCell: null, solution: [], initialGrid: [],
+      grid: [], gridRows: [], selectedCell: null, solution: [],
       timer: 0, timerText: '00:00.0', gameStarted: false, isRunning: false,
       showResult: false, resultStatus: null, currentLevel: 1, showCongrats: false,
       numberRows: makeNumberRows(cfg.size),
@@ -74,7 +74,7 @@ function createGamePage(options) {
       var grid = sudoku.toCellGrid(generated.puzzle);
       if (this.timer) this.timer.stop();
       this.setData({
-        grid: grid, gridRows: this.buildRows(grid, null), initialGrid: cloneCells(grid), solution: generated.solution,
+        grid: grid, gridRows: this.buildRows(grid, null), solution: generated.solution,
         selectedCell: null, timer: 0, timerText: '00:00.0', gameStarted: false,
         isRunning: false, showResult: false, resultStatus: null
       });
@@ -102,16 +102,29 @@ function createGamePage(options) {
     onNumberClick: function (e) { this.setCellValue(Number(e.currentTarget.dataset.num)); },
     checkAnswer: function () {
       var result = sudoku.checkGrid(this.data.grid, mode);
+      if (!result.isComplete) {
+        wx.showToast({ title: '请先填写完整', icon: 'none' });
+        return;
+      }
       var grid = cloneCells(this.data.grid);
-      grid.forEach(function (row, r) { row.forEach(function (cell, c) { cell.error = !!result.errorCells[r + '-' + c]; }); });
-      if (result.isComplete && !result.hasError) {
+      var solution = this.data.solution;
+      var hasWrongAnswer = false;
+      grid.forEach(function (row, r) {
+        row.forEach(function (cell, c) {
+          // 严格对照本题唯一正解，只标记玩家真正填错的格子。
+          cell.error = !cell.fixed && cell.value !== solution[r][c];
+          if (cell.error) hasWrongAnswer = true;
+        });
+      });
+      if (!hasWrongAnswer) {
         this.timer.pause();
         var usedSeconds = Math.floor(this.timer.get() / 1000);
         this.setData({ grid: grid, gridRows: this.buildRows(grid, this.data.selectedCell), isRunning: false, showResult: true, resultStatus: 'success' });
         if (cloud.isReady()) cloud.saveProgress(mode, this.data.currentLevel, usedSeconds).catch(function () { storage.saveProgress(mode, this.data.currentLevel, usedSeconds); }.bind(this));
         else storage.saveProgress(mode, this.data.currentLevel, usedSeconds);
       } else {
-        this.setData({ grid: grid, gridRows: this.buildRows(grid, this.data.selectedCell), showResult: true, resultStatus: 'error' });
+        // 错误时只在棋盘标出错格，不弹窗、不改变其他格子的颜色。
+        this.setData({ grid: grid, gridRows: this.buildRows(grid, this.data.selectedCell), showResult: false, resultStatus: null });
       }
     },
     nextLevel: function () {
@@ -122,15 +135,7 @@ function createGamePage(options) {
       this.setData({ gameStarted: true, isRunning: true });
       this.timer.start();
     },
-    resetGame: function () {
-      var grid = cloneCells(this.data.initialGrid);
-      this.timer.stop();
-      this.setData({ grid: grid, gridRows: this.buildRows(grid, null), selectedCell: null, timer: 0, timerText: '00:00.0', showResult: false, gameStarted: true, isRunning: true });
-      this.timer.start();
-    },
-    closeResult: function () { this.setData({ showResult: false }); if (!this.data.isRunning) { this.timer.resume(); this.setData({ isRunning: true }); } },
-    closeCongrats: function () { this.setData({ showCongrats: false }); wx.navigateBack({ delta: 1 }); },
-    goHome: function () { this.timer.stop(); wx.navigateBack({ delta: 1 }); }
+    closeCongrats: function () { this.setData({ showCongrats: false }); wx.navigateBack({ delta: 1 }); }
   };
 }
 

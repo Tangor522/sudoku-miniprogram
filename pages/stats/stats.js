@@ -7,6 +7,11 @@ var timerUtil = require('../../utils/timer');
 
 function pad(n) { return n < 10 ? '0' + n : '' + n; }
 
+function formatCompletedAt(value) {
+  var d = new Date(value || Date.now());
+  return (d.getMonth() + 1) + '月' + d.getDate() + '日 ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+}
+
 Page({
   data: {
     colorMode: 'normal',
@@ -56,21 +61,16 @@ Page({
   formatRecords: function (list) {
     return list.map(function (r) {
       var d = new Date(r.completedAt || Date.now());
-      var timeStr = pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
       return {
         level: r.level,
         usedTime: r.usedTime,
         usedTimeText: timerUtil.formatStopwatch((r.usedTime || 0) * 1000),
-        completed: timeStr
+        completed: formatCompletedAt(d)
       };
     });
   },
 
   goGame: function () {
     wx.navigateTo({ url: '/pages/game' + this.data.gameMode + '/game' + this.data.gameMode });
-  },
-
-  goHome: function () {
-    wx.navigateBack({ delta: 1 });
   }
 });

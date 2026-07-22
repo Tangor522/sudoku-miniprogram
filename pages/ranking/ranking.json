@@ -1,5 +1,5 @@
 {
-  "navigationBarTitleText": "玩家排行",
+  "navigationBarTitleText": "",
   "enablePullDownRefresh": true,
   "usingComponents": {}
 }
