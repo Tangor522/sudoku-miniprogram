@@ -6,6 +6,7 @@ Page({
   data: {
     colorMode: 'normal',
     user: null,
+    isGuest: false,
     firstLetter: '?'
   },
 
@@ -23,10 +24,15 @@ Page({
   },
 
   onShow: function () {
+    if (!auth.hasAccessChoice()) {
+      wx.redirectTo({ url: '/pages/login/login' });
+      return;
+    }
     theme.injectTheme(this);
     var user = store.getState('user');
     this.setData({
       user: user,
+      isGuest: auth.isGuest(),
       firstLetter: (user && user.nickName) ? user.nickName.charAt(0).toUpperCase() : '?'
     });
   },

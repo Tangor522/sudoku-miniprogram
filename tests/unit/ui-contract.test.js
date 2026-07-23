@@ -53,4 +53,12 @@ describe('全局 UI 设计契约', function () {
     expect(lobby).toContain('9×9');
     expect(read('pages/pk_game/pk_game.wxml')).toContain('>提交答案</button>');
   });
+
+  test('新用户可明确选择微信登录或游客体验，并告知游客限制', function () {
+    var login = read('pages/login/login.wxml');
+    expect(login).toContain('微信登录');
+    expect(login).toContain('游客体验');
+    expect(login).toContain('各前 3 关');
+    expect(read('app.json')).toMatch(/"pages\/login\/login"[\s\S]*"pages\/home\/home"/);
+  });
 });

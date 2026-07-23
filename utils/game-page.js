@@ -1,5 +1,6 @@
 var store = require('./store');
 var theme = require('./theme');
+var auth = require('./auth');
 var cloud = require('./cloud');
 var storage = require('./storage');
 var sudoku = require('./sudoku');
@@ -39,9 +40,13 @@ function createGamePage(options) {
       sizeClass: 'size-' + cfg.size
     },
     onLoad: function () {
+      if (!auth.hasAccessChoice()) {
+        wx.redirectTo({ url: '/pages/login/login' });
+        return;
+      }
       var that = this;
       this.unsubTheme = store.subscribe('colorMode', function (m) { that.setData({ colorMode: m }); });
-      this.setData({ currentLevel: storage.getLevel(mode) || 1 });
+      this.setData({ currentLevel: auth.isGuest() ? storage.getGuestLevel(mode) : (storage.getLevel(mode) || 1) });
       this.timer = timerUtil.createTimer(function (ms) {
         that.setData({ timer: ms, timerText: timerUtil.formatStopwatch(ms) });
       });
@@ -118,7 +123,8 @@ function createGamePage(options) {
         this.timer.pause();
         var usedSeconds = Math.floor(this.timer.get() / 1000);
         this.setData({ grid: grid, gridRows: this.buildRows(grid, this.data.selectedCell), isRunning: false, showResult: true, resultStatus: 'success' });
-        if (cloud.isReady()) cloud.saveProgress(mode, this.data.currentLevel, usedSeconds).catch(function () { storage.saveProgress(mode, this.data.currentLevel, usedSeconds); }.bind(this));
+        if (auth.isGuest()) storage.saveProgress(mode, this.data.currentLevel, usedSeconds);
+        else if (cloud.isReady()) cloud.saveProgress(mode, this.data.currentLevel, usedSeconds).catch(function () { storage.saveProgress(mode, this.data.currentLevel, usedSeconds); }.bind(this));
         else storage.saveProgress(mode, this.data.currentLevel, usedSeconds);
       } else {
         // 错误时只在棋盘标出错格，不弹窗、不改变其他格子的颜色。
@@ -126,10 +132,29 @@ function createGamePage(options) {
       }
     },
     nextLevel: function () {
+      var that = this;
+      if (auth.isGuest() && this.data.currentLevel >= 3) {
+        wx.showModal({
+          title: '游客体验已完成',
+          content: '游客可体验前 3 关，微信登录后即可继续挑战并同步进度。',
+          confirmText: '微信登录',
+          cancelText: '暂不登录',
+          success: function (res) {
+            if (res.confirm) {
+              that.setData({ showResult: false });
+              wx.redirectTo({ url: '/pages/login/login?from=guest-limit' });
+            }
+          }
+        });
+        return;
+      }
       this.setData({ showResult: false });
       if (this.data.currentLevel >= 100) { this.setData({ showCongrats: true }); return; }
       var next = this.data.currentLevel + 1;
-      this.setData({ currentLevel: next }); storage.setLevel(mode, next); this.startGame();
+      this.setData({ currentLevel: next });
+      if (auth.isGuest()) storage.setGuestLevel(mode, next);
+      else storage.setLevel(mode, next);
+      this.startGame();
       this.setData({ gameStarted: true, isRunning: true });
       this.timer.start();
     },

@@ -18,6 +18,9 @@ describe('utils/storage 本地存储封装', function () {
     expect(all.level4x4).toBe(1);
     expect(all.level6x6).toBe(1);
     expect(all.level9x9).toBe(1);
+    expect(all.guestLevel4x4).toBe(1);
+    expect(all.guestLevel6x6).toBe(1);
+    expect(all.guestLevel9x9).toBe(1);
     expect(all.stats['4x4']).toEqual([]);
     expect(all.stats['6x6']).toEqual([]);
     expect(all.stats['9x9']).toEqual([]);
@@ -61,5 +64,14 @@ describe('utils/storage 本地存储封装', function () {
     expect(u.openid.indexOf('local_')).toBe(0);
     expect(u.nickName).toBe('');
     expect(u.avatarUrl).toBe('');
+  });
+
+  test('游客关卡独立保存并始终限制在 1-3 关', function () {
+    storage.setLevel('4x4', 20);
+    storage.setGuestLevel('4x4', 2);
+    expect(storage.getGuestLevel('4x4')).toBe(2);
+    expect(storage.getLevel('4x4')).toBe(20);
+    storage.setGuestLevel('4x4', 9);
+    expect(storage.getGuestLevel('4x4')).toBe(3);
   });
 });

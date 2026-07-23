@@ -2,6 +2,7 @@
 App({
   globalData: {
     user: null,            // { openid, nickName, avatarUrl } 登录后填充
+    guestMode: false,      // 新用户主动选择游客体验后为 true
     colorMode: 'normal',   // 'normal' | 'soft' | 'eye-care'
     cloudReady: false,     // 云开发是否初始化完成
     // 云环境 ID：开通云开发后替换为真实环境 ID（见 README.md）
@@ -29,6 +30,7 @@ App({
     // 2. 读取本地缓存的登录态与主题
     const cachedUser = wx.getStorageSync('currentUser');
     if (cachedUser) this.globalData.user = cachedUser;
+    this.globalData.guestMode = !cachedUser && wx.getStorageSync('authMode') === 'guest';
 
     const cachedTheme = wx.getStorageSync('colorMode');
     if (cachedTheme && ['normal', 'soft', 'eye-care'].indexOf(cachedTheme) !== -1) {

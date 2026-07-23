@@ -60,4 +60,19 @@ describe('单人模式提交校验', function () {
     }, 0)).toBe(1);
     expect(wx.showToast).not.toHaveBeenCalled();
   });
+
+  test('游客完成第3关后必须登录，不能进入第4关', function () {
+    var modalOptions;
+    wx.getStorageSync = jest.fn(function (key) { return key === 'authMode' ? 'guest' : null; });
+    wx.showModal = jest.fn(function (options) { modalOptions = options; });
+    wx.redirectTo = jest.fn();
+    var page = makePage(cells(SOL4));
+    page.data.currentLevel = 3;
+    page.data.showResult = true;
+    page.nextLevel();
+    expect(wx.showModal).toHaveBeenCalled();
+    expect(page.data.currentLevel).toBe(3);
+    modalOptions.success({ confirm: true });
+    expect(wx.redirectTo).toHaveBeenCalledWith({ url: '/pages/login/login?from=guest-limit' });
+  });
 });

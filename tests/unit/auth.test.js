@@ -28,7 +28,25 @@ describe('utils/auth 登录鉴权', function () {
 
   test('logout 清空登录态', function () {
     store.setState('user', { openid: 'o1' });
+    auth.markWechatLogin();
     auth.logout();
     expect(store.getState('user')).toBeNull();
+    expect(mock.storage.authMode).toBeUndefined();
+  });
+
+  test('游客模式不伪造用户，但允许进入单人体验', function () {
+    auth.enterGuest();
+    expect(store.getState('user')).toBeNull();
+    expect(auth.isGuest()).toBe(true);
+    expect(auth.hasAccessChoice()).toBe(true);
+    expect(mock.storage.authMode).toBe('guest');
+  });
+
+  test('微信登录标记会退出游客模式', function () {
+    auth.enterGuest();
+    auth.markWechatLogin();
+    store.setState('user', { openid: 'o1' });
+    expect(auth.isGuest()).toBe(false);
+    expect(mock.storage.authMode).toBe('wechat');
   });
 });

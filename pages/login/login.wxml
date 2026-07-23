@@ -8,17 +8,10 @@
     </view>
 
     <view wx:if="{{silencing}}" class="silent-box">
-      <view class="silent-spinner"></view><view class="silent-text">正在准备你的挑战</view>
+      <view class="silent-spinner"></view><view class="silent-text">正在登录</view>
     </view>
 
-    <view wx:elif="{{silentFail && !showProfile}}" class="login-box panel">
-      <view class="panel-title">暂时无法登录</view>
-      <view class="login-desc">请检查网络后再试一次</view>
-      <button class="btn-primary login-btn" bindtap="handleLogin">重新登录</button>
-      <view wx:if="{{isLocalMode}}" class="local-tip">当前进度仅保存在本机</view>
-    </view>
-
-    <view wx:if="{{showProfile}}" class="profile-box panel">
+    <view wx:elif="{{showProfile}}" class="profile-box panel">
       <view class="profile-title">认识一下你</view>
       <view class="profile-sub">设置头像和昵称，开始今天的挑战</view>
       <button class="avatar-wrapper" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
@@ -27,14 +20,21 @@
         <view class="avatar-edit">＋</view>
       </button>
       <view class="avatar-tip">点击选择头像</view>
-
       <view class="nick-field">
         <text class="nick-label">昵称</text>
         <input type="nickname" class="nick-input" placeholder="请输入昵称" value="{{nickName}}" bindblur="onNickBlur" bindinput="onNickInput" />
       </view>
-
       <button class="btn-primary save-btn" bindtap="saveProfile">保存并进入</button>
       <view class="skip-btn" bindtap="skipProfile">稍后再设置</view>
+    </view>
+
+    <view wx:else class="login-box panel">
+      <view class="panel-title">选择进入方式</view>
+      <view class="login-desc">登录可同步进度，也可以先体验再决定</view>
+      <button class="btn-primary login-btn" bindtap="handleWechatLogin">微信登录</button>
+      <button class="btn-secondary guest-btn" bindtap="handleGuest">游客体验</button>
+      <view class="guest-tip"><view class="guest-tip-mark">3</view><text>游客可体验四宫格、六宫格、九宫格各前 3 关</text></view>
+      <view wx:if="{{silentFail}}" class="login-error">登录暂时失败，请检查网络后重试</view>
     </view>
   </view>
 </view>

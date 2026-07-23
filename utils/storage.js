@@ -11,6 +11,9 @@ function loadAll() {
     level4x4: 1,
     level6x6: 1,
     level9x9: 1,
+    guestLevel4x4: 1,
+    guestLevel6x6: 1,
+    guestLevel9x9: 1,
     stats: { '4x4': [], '6x6': [], '9x9': [] }
   };
 }
@@ -58,6 +61,19 @@ function setLevel(mode, level) {
   saveAll(all);
 }
 
+// 游客进度与正式账号隔离，并且只允许停留在前 3 关。
+function getGuestLevel(mode) {
+  var all = loadAll();
+  var level = all['guestLevel' + mode] || 1;
+  return Math.max(1, Math.min(3, level));
+}
+
+function setGuestLevel(mode, level) {
+  var all = loadAll();
+  all['guestLevel' + mode] = Math.max(1, Math.min(3, level));
+  saveAll(all);
+}
+
 // 生成本地临时用户（云开发未开通时用）
 function genLocalUser() {
   var id = 'local_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
@@ -71,5 +87,7 @@ module.exports = {
   getStats: getStats,
   getLevel: getLevel,
   setLevel: setLevel,
+  getGuestLevel: getGuestLevel,
+  setGuestLevel: setGuestLevel,
   genLocalUser: genLocalUser
 };
