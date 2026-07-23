@@ -113,3 +113,6 @@ button { font-family: inherit; }
 @keyframes pop { from{transform:translateY(24rpx) scale(.96);opacity:0} to{transform:none;opacity:1} }
 .animate-pop { animation:pop .24s ease-out; }
 @keyframes spin { to{transform:rotate(360deg)} }
+
+view,text,image,input,button,scroll-view{box-sizing:border-box}
+.root{width:100%;min-height:100vh;overflow-x:hidden}

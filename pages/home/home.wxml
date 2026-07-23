@@ -9,7 +9,7 @@
         <text class="brand-title">数独小勇士</text>
         <text class="brand-eyebrow">每天进步一小格</text>
       </view>
-      <view class="avatar-wrap" aria-label="退出登录" bindtap="handleLogout">
+      <view class="avatar-wrap" aria-label="{{user ? '退出登录' : '登录'}}" bindtap="handleAvatarTap">
         <image wx:if="{{user.avatarUrl}}" class="avatar" src="{{user.avatarUrl}}" mode="aspectFill"></image>
         <view wx:else class="avatar avatar-text">{{firstLetter}}</view>
         <view class="online-dot"></view>
@@ -18,7 +18,7 @@
 
     <view class="hero-card">
       <view class="hero-copy">
-        <text class="hero-kicker">欢迎回来，{{user.nickName || '小勇士'}}</text>
+        <text class="hero-kicker">{{user ? '欢迎回来，' + (user.nickName || '小勇士') : '无需登录，直接开始挑战'}}</text>
         <text class="hero-title">今天，从一格开始</text>
         <text class="hero-sub">专注思考，完成属于你的数独挑战</text>
       </view>

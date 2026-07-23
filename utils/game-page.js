@@ -1,6 +1,5 @@
 var store = require('./store');
 var theme = require('./theme');
-var auth = require('./auth');
 var cloud = require('./cloud');
 var storage = require('./storage');
 var sudoku = require('./sudoku');
@@ -49,7 +48,6 @@ function createGamePage(options) {
       this.startGame();
     },
     onShow: function () {
-      if (!auth.requireLogin()) return;
       theme.injectTheme(this);
       if (this.data.gameStarted && !this.data.isRunning && !this.data.showResult) {
         this.timer.resume(); this.setData({ isRunning: true });
