@@ -31,12 +31,12 @@
           <view class="rank-num rank-{{myRank.rank <= 3 ? myRank.rank : 'normal'}}">第{{myRank.rank}}名</view>
           <view class="my-rank-stats">
             <view class="stat-item">
+              <text class="stat-label">通过数</text>
               <text class="stat-num">{{myRank.totalLevels}}</text>
-              <text class="stat-label">总关数</text>
             </view>
             <view class="stat-item">
-              <text class="stat-num">{{myRank.totalTimeText}}</text>
               <text class="stat-label">总用时</text>
+              <text class="stat-num">{{myRank.totalTimeText}}</text>
             </view>
           </view>
         </view>
@@ -46,7 +46,7 @@
       <view class="rank-header">
         <view class="col-rank">名次</view>
         <view class="col-player">玩家</view>
-        <view class="col-levels">关数</view>
+        <view class="col-levels">通过数</view>
         <view class="col-time">总用时</view>
       </view>
 

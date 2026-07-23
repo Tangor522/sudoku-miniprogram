@@ -1,6 +1,5 @@
 var store = require('./store');
 var theme = require('./theme');
-var auth = require('./auth');
 var cloud = require('./cloud');
 var storage = require('./storage');
 var sudoku = require('./sudoku');
@@ -30,6 +29,7 @@ function makeNumberRows(size) {
 function createGamePage(options) {
   var mode = options.mode;
   var cfg = sudoku.MODES[mode];
+  var undoEnabled = mode === '9x9';
   return {
     data: {
       colorMode: 'normal', mode: mode, modeTitle: options.title,
@@ -37,7 +37,8 @@ function createGamePage(options) {
       timer: 0, timerText: '00:00.0', gameStarted: false, isRunning: false,
       showResult: false, resultStatus: null, currentLevel: 1, showCongrats: false,
       numberRows: makeNumberRows(cfg.size),
-      sizeClass: 'size-' + cfg.size
+      sizeClass: 'size-' + cfg.size,
+      undoEnabled: undoEnabled, canUndo: false, undoSteps: 0
     },
     onLoad: function () {
       var that = this;
@@ -49,7 +50,6 @@ function createGamePage(options) {
       this.startGame();
     },
     onShow: function () {
-      if (!auth.requireLogin()) return;
       theme.injectTheme(this);
       if (this.data.gameStarted && !this.data.isRunning && !this.data.showResult) {
         this.timer.resume(); this.setData({ isRunning: true });
@@ -72,11 +72,13 @@ function createGamePage(options) {
     startGame: function () {
       var generated = sudoku.generatePuzzle(mode, this.data.currentLevel);
       var grid = sudoku.toCellGrid(generated.puzzle);
+      this.undoHistory = [];
       if (this.timer) this.timer.stop();
       this.setData({
         grid: grid, gridRows: this.buildRows(grid, null), initialGrid: cloneCells(grid), solution: generated.solution,
         selectedCell: null, timer: 0, timerText: '00:00.0', gameStarted: false,
-        isRunning: false, showResult: false, resultStatus: null
+        isRunning: false, showResult: false, resultStatus: null,
+        canUndo: false, undoSteps: 0
       });
     },
     handleStart: function () {
@@ -94,12 +96,39 @@ function createGamePage(options) {
       if (!selected || this.data.grid[selected.row][selected.col].fixed) return;
       var old = this.data.grid[selected.row][selected.col].value;
       if (old === value) return;
+      if (undoEnabled) {
+        if (!this.undoHistory) this.undoHistory = [];
+        this.undoHistory.push({ row: selected.row, col: selected.col, value: old });
+        if (this.undoHistory.length > 3) this.undoHistory.shift();
+      }
       var grid = cloneCells(this.data.grid);
       grid[selected.row][selected.col].value = value;
       grid.forEach(function (row) { row.forEach(function (cell) { cell.error = false; }); });
-      this.setData({ grid: grid, gridRows: this.buildRows(grid, selected) });
+      this.setData({
+        grid: grid,
+        gridRows: this.buildRows(grid, selected),
+        canUndo: undoEnabled && this.undoHistory.length > 0,
+        undoSteps: undoEnabled ? this.undoHistory.length : 0
+      });
     },
     onNumberClick: function (e) { this.setCellValue(Number(e.currentTarget.dataset.num)); },
+    undoMove: function () {
+      if (!undoEnabled || !this.undoHistory || !this.undoHistory.length) return;
+      var move = this.undoHistory.pop();
+      var grid = cloneCells(this.data.grid);
+      grid[move.row][move.col].value = move.value;
+      grid.forEach(function (row) { row.forEach(function (cell) { cell.error = false; }); });
+      var selected = { row: move.row, col: move.col };
+      this.setData({
+        grid: grid,
+        gridRows: this.buildRows(grid, selected),
+        selectedCell: selected,
+        showResult: false,
+        resultStatus: null,
+        canUndo: this.undoHistory.length > 0,
+        undoSteps: this.undoHistory.length
+      });
+    },
     checkAnswer: function () {
       var result = sudoku.checkGrid(this.data.grid, mode);
       var grid = cloneCells(this.data.grid);
@@ -124,8 +153,9 @@ function createGamePage(options) {
     },
     resetGame: function () {
       var grid = cloneCells(this.data.initialGrid);
+      this.undoHistory = [];
       this.timer.stop();
-      this.setData({ grid: grid, gridRows: this.buildRows(grid, null), selectedCell: null, timer: 0, timerText: '00:00.0', showResult: false, gameStarted: true, isRunning: true });
+      this.setData({ grid: grid, gridRows: this.buildRows(grid, null), selectedCell: null, timer: 0, timerText: '00:00.0', showResult: false, gameStarted: true, isRunning: true, canUndo: false, undoSteps: 0 });
       this.timer.start();
     },
     closeResult: function () { this.setData({ showResult: false }); if (!this.data.isRunning) { this.timer.resume(); this.setData({ isRunning: true }); } },

@@ -97,7 +97,7 @@
 .stat-label {
   font-size: 22rpx;
   color: #999;
-  margin-top: 4rpx;
+  margin-bottom: 6rpx;
 }
 
 /* 表头 */
@@ -186,3 +186,21 @@
 
 .ranking-actions { display: flex; }
 .ranking-btn { flex: 1; font-size: 30rpx; padding: 24rpx 0; }
+
+.ranking-container { padding: calc(32rpx + env(safe-area-inset-top)) 32rpx calc(40rpx + env(safe-area-inset-bottom)); }
+.local-btn { min-height: 88rpx; }
+.retry-btn { min-height: 84rpx; }
+.rank-num { min-width: 150rpx; width: auto; }
+.ranking-btn { min-height: 88rpx; padding: 20rpx 0; }
+
+@media (max-width: 360px) {
+  .ranking-container { padding-left: 20rpx; padding-right: 20rpx; }
+  .my-rank-card { padding: 26rpx 22rpx; }
+  .rank-num { font-size: 34rpx; min-width: 128rpx; }
+  .stat-item { margin-left: 18rpx; }
+  .stat-num { font-size: 30rpx; }
+  .col-rank { width: 78rpx; }
+  .col-levels { width: 104rpx; }
+  .col-time { width: 142rpx; }
+  .col-player { padding-left: 8rpx; }
+}

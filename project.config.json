@@ -31,7 +31,7 @@
   },
   "appid": "wx2aee8764ea0cc2be",
   "projectname": "sudoku-miniprogram",
-  "libVersion": "2.21.2",
+  "libVersion": "3.16.2",
   "cloudfunctionRoot": "cloudfunctions/",
   "cloudbaseRoot": "",
   "cloudRoot": "cloudfunctions/",

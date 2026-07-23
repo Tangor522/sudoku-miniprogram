@@ -146,3 +146,12 @@
   font-size: 28rpx;
   color: var(--primary-text);
 }
+
+.login-container {
+  padding: calc(48rpx + env(safe-area-inset-top)) 48rpx calc(48rpx + env(safe-area-inset-bottom));
+}
+.login-btn, .save-btn {
+  min-height: 96rpx;
+  padding-top: 20rpx;
+  padding-bottom: 20rpx;
+}

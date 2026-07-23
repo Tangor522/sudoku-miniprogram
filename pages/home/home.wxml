@@ -4,7 +4,7 @@
     <view class="header">
       <view class="brand-mark">S</view>
       <view class="brand-copy"><text class="brand-eyebrow">DAILY BRAIN TRAINING</text><text class="brand-title">数独小勇士</text></view>
-      <view class="avatar-wrap" bindtap="handleLogout">
+      <view class="avatar-wrap" bindtap="handleAvatarTap">
         <image wx:if="{{user.avatarUrl}}" class="avatar" src="{{user.avatarUrl}}" mode="aspectFill"></image>
         <view wx:else class="avatar avatar-text">{{firstLetter}}</view><view class="online-dot"></view>
       </view>
@@ -12,7 +12,7 @@
 
     <view class="hero-card">
       <view class="hero-decoration">✦</view>
-      <view class="hero-copy"><text class="hero-kicker">欢迎回来，{{user.nickName || '小勇士'}}</text><text class="hero-title">今天也让大脑\n闪闪发光吧</text><text class="hero-sub">每天一道题，专注力慢慢长大</text></view>
+      <view class="hero-copy"><text class="hero-kicker">{{user ? '欢迎回来，' + (user.nickName || '小勇士') : '无需登录，直接开始挑战'}}</text><text class="hero-title">今天也让大脑\n闪闪发光吧</text><text class="hero-sub">每天一道题，专注力慢慢长大</text></view>
       <view class="hero-orbit"><view class="hero-core">✦</view><view class="orbit-dot one"></view><view class="orbit-dot two"></view></view>
     </view>
 

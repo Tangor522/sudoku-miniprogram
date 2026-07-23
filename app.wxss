@@ -82,6 +82,20 @@ page {
 }
 
 /* ============ 通用按钮 ============ */
+button {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 24rpx;
+  padding-right: 24rpx;
+  line-height: 1.25;
+  overflow: hidden;
+}
+button::after { border: 0; }
+
 .btn-primary {
   background: linear-gradient(to right, var(--primary-from), var(--primary-to));
   color: #ffffff;
@@ -90,7 +104,7 @@ page {
   font-size: 36rpx;
   box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.12);
   transition: all 0.3s;
-  line-height: 1.6;
+  line-height: 1.25;
 }
 .btn-primary::after { border: none; }
 
@@ -102,7 +116,7 @@ page {
   font-size: 36rpx;
   box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.12);
   transition: all 0.3s;
-  line-height: 1.6;
+  line-height: 1.25;
 }
 .btn-secondary::after { border: none; }
 
@@ -114,7 +128,7 @@ page {
   font-size: 36rpx;
   box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.12);
   transition: all 0.3s;
-  line-height: 1.6;
+  line-height: 1.25;
 }
 .btn-accent::after { border: none; }
 
@@ -158,3 +172,6 @@ page {
   100% { transform: scale(1); opacity: 1; }
 }
 .animate-pop { animation: pop 0.4s ease; }
+
+view, text, image, input, button, scroll-view { box-sizing: border-box; }
+.root { width: 100%; min-height: 100vh; overflow-x: hidden; }

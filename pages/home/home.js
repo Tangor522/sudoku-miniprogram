@@ -23,7 +23,6 @@ Page({
   },
 
   onShow: function () {
-    if (!auth.requireLogin()) return;
     theme.injectTheme(this);
     var user = store.getState('user');
     this.setData({
@@ -59,11 +58,27 @@ Page({
   },
 
   goRanking: function () {
+    if (!store.getState('user')) {
+      wx.navigateTo({ url: '/pages/login/login?from=ranking' });
+      return;
+    }
     wx.navigateTo({ url: '/pages/ranking/ranking' });
   },
 
   goPk: function () {
+    if (!store.getState('user')) {
+      wx.navigateTo({ url: '/pages/login/login?from=pk' });
+      return;
+    }
     wx.navigateTo({ url: '/pages/pk_lobby/pk_lobby' });
+  },
+
+  handleAvatarTap: function () {
+    if (!store.getState('user')) {
+      wx.navigateTo({ url: '/pages/login/login?from=home' });
+      return;
+    }
+    this.handleLogout();
   },
 
   handleLogout: function () {

@@ -34,3 +34,19 @@
 .quick-row{display:flex;gap:18rpx;margin-top:18rpx}.quick-card{flex:1;min-width:0;padding:24rpx 20rpx;border-radius:30rpx;background:rgba(255,255,255,.88);box-shadow:var(--shadow-soft);display:flex;align-items:center;gap:15rpx}.quick-icon{width:58rpx;height:58rpx;flex:none;border-radius:19rpx;display:flex;align-items:center;justify-content:center;font-size:30rpx;font-weight:900}.quick-icon.stats{background:#e4f5ec;color:#27926a}.quick-icon.rank{background:#fff1cf;color:#b77b10}.quick-title,.quick-sub{display:block}.quick-title{font-size:24rpx;color:var(--text-main);font-weight:850}.quick-sub{font-size:18rpx;color:var(--text-muted);margin-top:5rpx;white-space:nowrap}
 .pk-card{margin-top:18rpx;padding:24rpx;border-radius:30rpx;background:rgba(255,255,255,.88);box-shadow:var(--shadow-soft);display:flex;align-items:center}.pk-icon{width:64rpx;height:64rpx;border-radius:22rpx;background:var(--cell-peer);color:var(--primary-solid);display:flex;align-items:center;justify-content:center;font-size:31rpx}.pk-copy{flex:1;margin-left:18rpx}.pk-arrow{color:var(--primary-solid);font-size:35rpx;font-weight:900}
 .theme-bar{margin:24rpx 5rpx 0;display:flex;align-items:center;justify-content:space-between}.theme-label{color:var(--text-muted);font-size:21rpx}.theme-options{display:flex;gap:17rpx}.theme-dot{width:29rpx;height:29rpx;border-radius:50%;box-sizing:border-box}.theme-dot.active{border:5rpx solid #fff;box-shadow:0 0 0 3rpx var(--text-muted)}.pink{background:#ec4899}.green{background:#22c55e}.amber{background:#d97706}
+
+.home-container{padding-bottom:calc(60rpx + env(safe-area-inset-bottom));box-sizing:border-box}
+.quick-card>view:last-child{min-width:0}
+.quick-sub{overflow:hidden;text-overflow:ellipsis}
+
+@media (max-width: 360px) {
+  .home-container { padding-left: 20rpx; padding-right: 20rpx; }
+  .brand-eyebrow { display: none; }
+  .hero-card { padding-left: 28rpx; }
+  .hero-title { font-size: 42rpx; }
+  .section-head { align-items: flex-start; flex-direction: column; gap: 6rpx; }
+  .mode-card { padding: 22rpx; }
+  .mode-desc { white-space: normal; }
+  .quick-row { flex-direction: column; }
+  .quick-card { width: 100%; }
+}

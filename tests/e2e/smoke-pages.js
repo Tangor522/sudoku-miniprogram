@@ -6,9 +6,11 @@ const automator = require('miniprogram-automator');
 const PROJECT_PATH = path.resolve(__dirname, '../..');
 const CLI_PATH = process.platform === 'darwin'
   ? '/Applications/wechatwebdevtools.app/Contents/MacOS/cli'
-  : 'C:\\Program Files (x86)\\Tencent\\微信web开发者工具\\cli.bat';
+  : 'D:\\Tencent\\微信web开发者工具\\cli.bat';
 // 截图必须放到项目外，否则开发者工具文件监听会触发热重载并中断导航。
-const SHOTS_DIR = '/private/tmp/sudoku-e2e-screenshots';
+const SHOTS_DIR = process.platform === 'darwin'
+  ? '/private/tmp/sudoku-e2e-screenshots'
+  : 'D:\\tmp\\sudoku-e2e-screenshots';
 
 async function injectUser(miniProgram) {
   const state = await miniProgram.evaluate(() => {
@@ -42,18 +44,19 @@ async function navigatePage(miniProgram, route, selector) {
 
 async function run() {
   if (!fs.existsSync(SHOTS_DIR)) fs.mkdirSync(SHOTS_DIR, { recursive: true });
-  const miniProgram = await automator.launch({ cliPath: CLI_PATH, projectPath: PROJECT_PATH, trustProject: true });
+  const miniProgram = await automator.connect({ wsEndpoint: 'ws://127.0.0.1:9420' });
   try {
     miniProgram.on('console', msg => console.log('[小程序 console]', msg));
     miniProgram.on('exception', err => console.error('[小程序 exception]', err));
     await injectUser(miniProgram);
 
     const home = await assertPage(miniProgram, '/pages/home/home', '.home-container');
-    await miniProgram.screenshot({ path: path.join(SHOTS_DIR, 'home.png') });
+    console.log('E2E_STEP: home');
 
     for (const size of [4, 6, 9]) {
       const route = `/pages/game${size}x${size}/game${size}x${size}`;
       const page = await navigatePage(miniProgram, route, '.grid');
+      console.log(`E2E_STEP: game-${size}x${size}`);
       const grid = await page.data('gridRows');
       if (!Array.isArray(grid) || grid.length !== size || grid.some(row => row.length !== size)) {
         throw new Error(`${size}x${size} 棋盘维度错误`);
@@ -65,6 +68,9 @@ async function run() {
       await startButton.tap();
       await page.waitFor(150);
       if (!(await page.data('gameStarted'))) throw new Error(`${size}x${size} 点击后未开始`);
+      const undoButton = await page.$('.undo-button');
+      if (size === 9 && !undoButton) throw new Error('9x9 缺少回退按钮');
+      if (size !== 9 && undoButton) throw new Error(`${size}x${size} 不应显示回退按钮`);
 
       const editable = grid.flat().findIndex(cell => !cell.fixed);
       const cells = await page.$$('.cell');
@@ -76,17 +82,34 @@ async function run() {
       await page.waitFor(150);
       const updated = await page.data('gridRows');
       if (updated.flat()[editable].value !== 1) throw new Error(`${size}x${size} 数字输入失败`);
+      if (size === 9) {
+        for (const numIndex of [1, 2, 3]) {
+          await nums[numIndex].tap();
+          await page.waitFor(80);
+        }
+        if ((await page.data('undoSteps')) !== 3) throw new Error('9x9 回退记录未限制为 3 步');
+        for (const expected of [3, 2, 1]) {
+          await undoButton.tap();
+          await page.waitFor(80);
+          const afterUndo = await page.data('gridRows');
+          if (afterUndo.flat()[editable].value !== expected) {
+            throw new Error(`9x9 回退结果错误，期望 ${expected}`);
+          }
+        }
+        if ((await page.data('canUndo')) || (await page.data('undoSteps')) !== 0) {
+          throw new Error('9x9 三步回退后按钮状态错误');
+        }
+      }
       if ((await page.$$('.tool')).length !== 0) throw new Error(`${size}x${size} 不应存在额外辅助工具`);
-      await miniProgram.screenshot({ path: path.join(SHOTS_DIR, `game-${size}x${size}.png`) });
       await miniProgram.navigateBack();
     }
 
     await navigatePage(miniProgram, '/pages/stats/stats', '.stats-container');
-    await miniProgram.screenshot({ path: path.join(SHOTS_DIR, 'stats.png') });
-    console.log('E2E_SMOKE_OK: 首页、三种棋盘、手动开始、大键盘输入、记录页均通过');
+    console.log('E2E_STEP: stats');
+    console.log('E2E_SMOKE_OK: 首页、三种棋盘、九宫格三步回退、手动开始、大键盘输入、记录页均通过');
   } finally {
-    await miniProgram.close();
+    // 连接的是已打开的开发者工具，不在测试结束时关闭用户窗口。
   }
 }
 
-run().catch(err => { console.error(err); process.exitCode = 1; });
+run().then(() => process.exit(0)).catch(err => { console.error(err); process.exit(1); });
