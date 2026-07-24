@@ -18,7 +18,16 @@ describe('utils/auth 登录鉴权', function () {
     var ok = auth.requireLogin();
     expect(ok).toBe(false);
     var red = mock.calls.find(function (c) { return c.type === 'redirectTo'; });
-    expect(red.url).toBe('/pages/login/login');
+    expect(red.url).toBe('/pages/login/login?from=home');
+  });
+
+  test('requireLogin 保留目标功能，登录后可正确回跳', function () {
+    expect(auth.requireLogin('pk')).toBe(false);
+    var red = mock.calls.find(function (c) { return c.type === 'redirectTo'; });
+    expect(red.url).toBe('/pages/login/login?from=pk');
+    expect(auth.loginUrl('ranking')).toBe('/pages/login/login?from=ranking');
+    expect(auth.loginUrl('game9x9')).toBe('/pages/login/login?from=game9x9');
+    expect(auth.loginUrl('unknown')).toBe('/pages/login/login?from=home');
   });
 
   test('requireLogin 已登录 → 返回 true', function () {

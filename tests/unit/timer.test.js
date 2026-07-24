@@ -24,6 +24,9 @@ describe('utils/timer', function () {
       // 1234ms → 1.2 秒（截断，非四舍五入）
       expect(timerUtil.formatStopwatch(1234)).toBe('00:01.2');
     });
+    test('拆分整数时间与十分位，便于界面稳定排版', function () {
+      expect(timerUtil.formatStopwatchParts(12600)).toEqual({ text: '00:12.6', main: '00:12', tenths: '6' });
+    });
   });
 
   describe('createTimer 生命周期', function () {

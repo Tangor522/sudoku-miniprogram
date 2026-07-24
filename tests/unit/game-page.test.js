@@ -27,12 +27,14 @@ function makePage(grid) {
 
 describe('单人模式提交校验', function () {
   beforeEach(function () {
+    var app = { globalData: { cloudReady: false, user: null } };
     global.wx = {
       showToast: jest.fn(),
+      redirectTo: jest.fn(),
       getStorageSync: jest.fn(function () { return null; }),
       setStorageSync: jest.fn()
     };
-    global.getApp = function () { return { globalData: { cloudReady: false } }; };
+    global.getApp = function () { return app; };
   });
 
   test('未填写完整时只提示，不标错也不弹结果', function () {
@@ -59,5 +61,28 @@ describe('单人模式提交校验', function () {
       return count + row.filter(function (cell) { return cell.error; }).length;
     }, 0)).toBe(1);
     expect(wx.showToast).not.toHaveBeenCalled();
+  });
+
+  test('游客完成第 3 关后要求登录，不直接进入第 4 关', function () {
+    var page = makePage(cells(SOL4, {}));
+    page.data.currentLevel = 3;
+    page.data.showResult = true;
+    page.nextLevel();
+    expect(page.data.currentLevel).toBe(3);
+    expect(wx.redirectTo).toHaveBeenCalledWith({
+      url: '/pages/login/login?from=game4x4'
+    });
+  });
+
+  test('已登录用户完成第 3 关后可以进入第 4 关', function () {
+    getApp().globalData.user = { openid: 'logged-in' };
+    var page = makePage(cells(SOL4, {}));
+    page.data.currentLevel = 3;
+    page.startGame = jest.fn();
+    page.timer = { start: jest.fn() };
+    page.nextLevel();
+    expect(page.data.currentLevel).toBe(4);
+    expect(page.startGame).toHaveBeenCalled();
+    expect(wx.redirectTo).not.toHaveBeenCalled();
   });
 });

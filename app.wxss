@@ -32,6 +32,17 @@ page {
   --secondary-soft: #ded7ef;
   --shadow-soft: 0 8rpx 26rpx rgba(50,37,48,.07);
   --shadow-card: 0 20rpx 54rpx rgba(50,37,48,.10);
+  /* 现代全面屏响应式尺寸：rpx 负责随宽度变化，px 上下限避免过小或过大。 */
+  --font-xs: clamp(12px,22rpx,14px);
+  --font-sm: clamp(13px,24rpx,15px);
+  --font-md: clamp(14px,27rpx,17px);
+  --font-lg: clamp(17px,34rpx,21px);
+  --font-xl: clamp(21px,42rpx,27px);
+  --icon-sm: clamp(32px,64rpx,38px);
+  --icon-md: clamp(40px,82rpx,48px);
+  --icon-lg: clamp(56px,108rpx,68px);
+  --page-gutter: clamp(14px,28rpx,18px);
+  --touch-min: 44px;
 }
 
 .theme-normal {
@@ -68,6 +79,7 @@ page {
 }
 
 button { font-family: inherit; }
+button,input,text { -webkit-text-size-adjust:100%; }
 
 .btn-primary,.btn-secondary,.btn-accent {
   min-height: 92rpx;
@@ -116,3 +128,15 @@ button { font-family: inherit; }
 
 view,text,image,input,button,scroll-view{box-sizing:border-box}
 .root{width:100%;min-height:100vh;overflow-x:hidden}
+
+/* 响应式可读性基线：正文不低于约 14px，触控区域不低于约 44px。 */
+.root{font-size:28rpx}
+.btn-primary,.btn-secondary,.btn-accent{
+  min-height:96rpx;
+  padding-left:28rpx;
+  padding-right:28rpx;
+  font-size:var(--font-md);
+}
+@media (min-width:430px){
+  .root{font-size:30rpx}
+}

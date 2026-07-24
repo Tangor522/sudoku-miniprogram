@@ -42,7 +42,7 @@
       <view class="result-badge success"><view class="checkmark"></view></view>
       <view class="modal-kicker">挑战完成</view>
       <view class="modal-title">做得很好</view>
-      <view class="result-time">{{timerText}}</view>
+      <view class="result-time"><text>{{timerMain}}</text><text class="result-time-dot">.</text><text class="result-time-tenths">{{timerTenths}}</text></view>
       <view class="modal-desc">第 {{currentLevel}} 关已记录，继续保持专注</view>
       <button class="submit-btn modal-btn" bindtap="nextLevel">继续下一关</button>
     </view>

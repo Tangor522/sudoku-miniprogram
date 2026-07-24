@@ -6,9 +6,16 @@ const automator = require('miniprogram-automator');
 const PROJECT_PATH = path.resolve(__dirname, '../..');
 const CLI_PATH = process.platform === 'darwin'
   ? '/Applications/wechatwebdevtools.app/Contents/MacOS/cli'
-  : 'C:\\Program Files (x86)\\Tencent\\微信web开发者工具\\cli.bat';
+  : (process.env.WECHAT_DEVTOOLS_CLI || 'C:\\Program Files (x86)\\Tencent\\微信web开发者工具\\cli.bat');
 // 截图必须放到项目外，否则开发者工具文件监听会触发热重载并中断导航。
-const SHOTS_DIR = '/private/tmp/sudoku-e2e-screenshots';
+const SHOTS_DIR = path.join(require('os').tmpdir(), 'sudoku-e2e-screenshots');
+
+async function clearUser(miniProgram) {
+  await miniProgram.evaluate(() => {
+    getApp().globalData.user = null;
+    wx.removeStorageSync('currentUser');
+  });
+}
 
 async function injectUser(miniProgram) {
   const state = await miniProgram.evaluate(() => {
@@ -44,18 +51,29 @@ async function run() {
   if (!fs.existsSync(SHOTS_DIR)) fs.mkdirSync(SHOTS_DIR, { recursive: true });
   const miniProgram = process.env.AUTOMATOR_WS
     ? await automator.connect({ wsEndpoint: process.env.AUTOMATOR_WS })
-    : await automator.launch({ cliPath: CLI_PATH, projectPath: PROJECT_PATH, trustProject: true });
+    : await automator.launch({
+        cliPath: CLI_PATH,
+        projectPath: PROJECT_PATH,
+        trustProject: true,
+        port: Number(process.env.AUTOMATOR_PORT || 9420),
+        args: process.env.WECHAT_DEVTOOLS_PORT ? ['--port', process.env.WECHAT_DEVTOOLS_PORT] : []
+      });
   try {
     miniProgram.on('console', msg => console.log('[小程序 console]', msg));
     miniProgram.on('exception', err => console.error('[小程序 exception]', err));
-    await injectUser(miniProgram);
 
-    const home = await assertPage(miniProgram, '/pages/home/home', '.home-container');
+    await clearUser(miniProgram);
+    const home = await miniProgram.reLaunch('/pages/home/home');
+    await home.waitFor(600);
+    if (!(await home.$('.home-container'))) throw new Error('游客首页未正常渲染');
+    if (await home.data('user')) throw new Error('游客首页不应自动登录');
     await miniProgram.screenshot({ path: path.join(SHOTS_DIR, 'home.png') });
 
     for (const size of [4, 6, 9]) {
       const route = `/pages/game${size}x${size}/game${size}x${size}`;
-      const page = await navigatePage(miniProgram, route, '.grid');
+      const page = await miniProgram.navigateTo(route);
+      await page.waitFor(600);
+      if (!(await page.$('.grid'))) throw new Error(`${size}x${size} 游客无法进入棋盘`);
       const grid = await page.data('gridRows');
       if (!Array.isArray(grid) || grid.length !== size || grid.some(row => row.length !== size)) {
         throw new Error(`${size}x${size} 棋盘维度错误`);
@@ -83,9 +101,23 @@ async function run() {
       await miniProgram.navigateBack();
     }
 
-    await navigatePage(miniProgram, '/pages/stats/stats', '.stats-container');
+    const stats = await miniProgram.navigateTo('/pages/stats/stats');
+    await stats.waitFor(600);
+    if (!(await stats.$('.stats-container'))) throw new Error('游客无法查看本地成长记录');
     await miniProgram.screenshot({ path: path.join(SHOTS_DIR, 'stats.png') });
-    console.log('E2E_SMOKE_OK: 首页、三种棋盘、手动开始、大键盘输入、记录页均通过');
+    await miniProgram.navigateBack();
+
+    const guestHome = await miniProgram.currentPage();
+    await clearUser(miniProgram);
+    const pkButton = await guestHome.$('.pk-card');
+    await pkButton.tap();
+    await guestHome.waitFor(500);
+    const login = await miniProgram.currentPage();
+    if ((await login.path) !== 'pages/login/login') throw new Error('游客点击 PK 后未进入登录页');
+    if ((await login.data('from')) !== 'pk') throw new Error('登录页未保留 PK 回跳目标');
+    if (!(await login.$('.login-btn'))) throw new Error('登录页缺少用户主动登录按钮');
+    await miniProgram.screenshot({ path: path.join(SHOTS_DIR, 'login-for-pk.png') });
+    console.log('E2E_SMOKE_OK: 游客首页、三种单人棋盘、本地记录、PK 按需登录均通过');
   } finally {
     await miniProgram.close();
   }

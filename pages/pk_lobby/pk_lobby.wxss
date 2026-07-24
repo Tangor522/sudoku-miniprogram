@@ -2,7 +2,7 @@
 .opt-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10rpx;margin-top:20rpx}.opt-btn{padding:17rpx 4rpx;border-radius:21rpx;display:flex;flex-direction:column;align-items:center;background:var(--surface-soft);border:2rpx solid transparent;color:var(--text-muted);transition:transform .12s ease}.opt-btn text{font-size:27rpx;font-weight:900}.opt-btn.active{background:var(--surface-strong);border-color:var(--primary-solid);color:var(--primary-solid)}.opt-btn:active,.round-control:active{transform:scale(.94)}
 .rounds-section{display:flex;align-items:center;justify-content:space-between}.rounds-input-row{display:flex;align-items:center}.round-control{width:58rpx;height:58rpx;border-radius:18rpx;display:flex;align-items:center;justify-content:center;background:var(--surface-strong);color:var(--primary-solid);font-size:32rpx;font-weight:800}.rounds-input{width:70rpx;text-align:center;font-size:39rpx;font-weight:900;color:var(--text-main)}.error-tip{padding:18rpx 22rpx;border-radius:18rpx;background:var(--error-bg);color:var(--error-color);font-size:23rpx;text-align:center;margin-bottom:18rpx}
 .matching-box{padding:54rpx 34rpx;display:flex;flex-direction:column;align-items:center}.matching-spinner{width:54rpx;height:54rpx;border:5rpx solid var(--surface-strong);border-top-color:var(--primary-solid);border-radius:50%;animation:spin .8s linear infinite}.matching-text{font-size:31rpx;color:var(--text-main);font-weight:850;margin-top:25rpx}.matching-sub{font-size:21rpx;color:var(--text-muted);margin-top:8rpx}.room-code-display{margin:27rpx 0 5rpx;font-size:52rpx;color:var(--primary-solid);font-weight:900;letter-spacing:10rpx}.cancel-btn{width:100%;margin-top:28rpx}
-.actions{margin-top:8rpx}.action-btn{width:100%}.friend-divider{display:flex;align-items:center;margin:28rpx 4rpx 20rpx}.friend-divider view{height:1rpx;flex:1;background:var(--border-color)}.friend-divider text{font-size:19rpx;color:var(--text-muted);margin:0 18rpx}.join-input-row{padding:4rpx;border-radius:25rpx;background:rgba(255,255,255,.94);box-shadow:var(--shadow-soft)}.join-input{height:88rpx;text-align:center;font-size:29rpx;letter-spacing:5rpx;color:var(--text-main)}.action-row{display:grid;grid-template-columns:1fr 1fr;gap:14rpx;margin-top:16rpx}.action-btn-half{width:100%;margin:0;font-size:27rpx}
+.actions{width:100%;min-width:0;margin-top:8rpx}.action-btn{width:100%}.friend-divider{display:flex;align-items:center;margin:28rpx 4rpx 20rpx}.friend-divider view{height:1rpx;flex:1;background:var(--border-color)}.friend-divider text{font-size:19rpx;color:var(--text-muted);margin:0 18rpx}.join-input-row{width:100%;min-width:0;padding:4rpx;border-radius:25rpx;background:rgba(255,255,255,.94);box-shadow:var(--shadow-soft)}.join-input{width:100%;height:88rpx;text-align:center;font-size:29rpx;letter-spacing:5rpx;color:var(--text-main)}.action-row{width:100%;min-width:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14rpx;margin-top:16rpx}.action-btn-half{width:100%;min-width:0;margin:0;font-size:27rpx}
 .room-panel{padding:45rpx 34rpx 34rpx;display:flex;flex-direction:column;align-items:center}.room-ready-mark{width:82rpx;height:82rpx;border-radius:27rpx;display:flex;align-items:center;justify-content:center;background:var(--surface-strong)}.room-ready-mark view{width:32rpx;height:18rpx;border-left:6rpx solid var(--primary-solid);border-bottom:6rpx solid var(--primary-solid);transform:rotate(-45deg) translate(2rpx,-3rpx)}.room-panel-title{font-size:31rpx;color:var(--text-main);font-weight:900;margin-top:23rpx}.room-code-big{font-size:62rpx;color:var(--primary-solid);font-weight:900;letter-spacing:11rpx;margin-top:18rpx}.room-tip{font-size:22rpx;color:var(--text-muted);text-align:center;margin:11rpx 0 28rpx}.room-btn{width:100%}.close-room-btn{margin-top:14rpx}
 .opt-btn .opt-name{font-size:18rpx;font-weight:500;margin-top:5rpx}
 
@@ -14,4 +14,47 @@
   .action-row{gap:10rpx}
   .action-btn-half{font-size:24rpx;padding-left:6rpx;padding-right:6rpx}
   .room-code-big{font-size:54rpx;letter-spacing:8rpx}
+}
+
+.lobby-container{width:100%;max-width:430px;padding-left:var(--page-gutter);padding-right:var(--page-gutter)}
+.versus-mark{width:var(--icon-md);height:var(--icon-md);font-size:var(--font-sm)}
+.lobby-title{font-size:var(--font-xl)}
+.lobby-sub,.section-hint,.opt-btn .opt-name,.friend-divider text,.matching-sub,.room-tip{font-size:var(--font-sm)}
+.section-label,.opt-btn text,.action-btn-half,.join-input{font-size:var(--font-md)}
+.error-tip,.matching-text,.room-panel-title{font-size:var(--font-md)}
+.room-code-display,.room-code-big{font-size:var(--font-xl)}
+.opt-row{grid-template-columns:repeat(3,minmax(0,1fr))}
+.section,.rounds-section,.opt-row,.actions,.action-row{width:100%;min-width:0}
+.round-control{width:var(--touch-min);height:var(--touch-min)}
+.rounds-input{font-size:var(--font-xl)}
+.opt-btn,.action-btn,.action-btn-half,.join-input{min-height:var(--touch-min)}
+@media (max-width:374px){
+  .action-row{grid-template-columns:1fr}
+}
+
+/* PK 大厅：提高说明文字、选项与步进器的可读性和触控面积。 */
+.lobby-container{padding-bottom:calc(72rpx + env(safe-area-inset-bottom))}
+.versus-mark{width:82rpx;height:82rpx;font-size:27rpx}
+.versus-mark{padding:0;line-height:1;overflow:hidden}
+.versus-text{width:100%;height:100%;display:flex;align-items:center;justify-content:center;line-height:1;text-align:center;font-weight:900}
+.lobby-title{font-size:41rpx;line-height:1.25}
+.lobby-sub{font-size:25rpx;line-height:1.45}
+.section-label{font-size:29rpx}
+.section-hint{font-size:23rpx;line-height:1.5}
+.opt-btn{min-height:112rpx;padding:18rpx 8rpx;justify-content:center}
+.opt-btn text{font-size:30rpx}
+.opt-btn .opt-name{font-size:23rpx;margin-top:7rpx}
+.round-control{width:84rpx;height:84rpx;font-size:39rpx;border-radius:24rpx}
+.rounds-input{width:82rpx;font-size:42rpx}
+.friend-divider text{font-size:23rpx}
+.join-input{height:96rpx;font-size:31rpx}
+.action-btn-half{min-height:96rpx;font-size:29rpx}
+.matching-sub,.room-tip{font-size:25rpx;line-height:1.5}
+@media (max-width:360px){
+  .section{padding-left:0;padding-right:0}
+  .opt-row{gap:8rpx}
+  .opt-btn{min-height:106rpx}
+  .opt-btn text{font-size:28rpx}
+  .opt-btn .opt-name{font-size:21rpx}
+  .action-row{grid-template-columns:1fr}
 }

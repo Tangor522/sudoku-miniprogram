@@ -10,6 +10,10 @@ function formatTime(seconds) {
   return timerUtil.formatStopwatch(seconds * 1000);
 }
 
+function formatTimeParts(seconds) {
+  return timerUtil.formatStopwatchParts((seconds && seconds > 0 ? seconds : 0) * 1000);
+}
+
 Page({
   data: {
     colorMode: 'normal',
@@ -28,7 +32,7 @@ Page({
   },
 
   onShow: function () {
-    if (!auth.requireLogin()) return;
+    if (!auth.requireLogin('ranking')) return;
     theme.injectTheme(this);
     this.setData({ isLocalMode: !cloud.isReady() });
     if (cloud.isReady()) {
@@ -47,18 +51,24 @@ Page({
     this.setData({ loading: true, error: '' });
     cloud.getRanking().then(function (res) {
       var list = (res.list || []).map(function (item) {
+        var time = formatTimeParts(item.totalTime);
         return {
           rank: item.rank,
           nickName: item.nickName,
           avatarUrl: item.avatarUrl,
           totalLevels: item.totalLevels,
           totalTimeText: formatTime(item.totalTime),
+          totalTimeMain: time.main,
+          totalTimeTenths: time.tenths,
           isMe: item.isMe
         };
       });
       var myRank = res.myRank;
       if (myRank) {
+        var myTime = formatTimeParts(myRank.totalTime);
         myRank.totalTimeText = formatTime(myRank.totalTime);
+        myRank.totalTimeMain = myTime.main;
+        myRank.totalTimeTenths = myTime.tenths;
       }
       that.setData({
         rankings: list,

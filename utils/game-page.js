@@ -4,6 +4,9 @@ var cloud = require('./cloud');
 var storage = require('./storage');
 var sudoku = require('./sudoku');
 var timerUtil = require('./timer');
+var auth = require('./auth');
+
+var GUEST_LEVEL_LIMIT = 3;
 
 function cloneCells(grid) {
   return grid.map(function (row) {
@@ -33,17 +36,23 @@ function createGamePage(options) {
     data: {
       colorMode: 'normal', mode: mode, modeTitle: options.title,
       grid: [], gridRows: [], selectedCell: null, solution: [],
-      timer: 0, timerText: '00:00.0', gameStarted: false, isRunning: false,
+      timer: 0, timerText: '00:00.0', timerMain: '00:00', timerTenths: '0', gameStarted: false, isRunning: false,
       showResult: false, resultStatus: null, currentLevel: 1, showCongrats: false,
       numberRows: makeNumberRows(cfg.size),
       sizeClass: 'size-' + cfg.size
     },
     onLoad: function () {
       var that = this;
+      var currentLevel = storage.getLevel(mode) || 1;
+      if (!store.getState('user') && currentLevel > GUEST_LEVEL_LIMIT) {
+        auth.requireLogin('game' + mode);
+        return;
+      }
       this.unsubTheme = store.subscribe('colorMode', function (m) { that.setData({ colorMode: m }); });
-      this.setData({ currentLevel: storage.getLevel(mode) || 1 });
+      this.setData({ currentLevel: currentLevel });
       this.timer = timerUtil.createTimer(function (ms) {
-        that.setData({ timer: ms, timerText: timerUtil.formatStopwatch(ms) });
+        var time = timerUtil.formatStopwatchParts(ms);
+        that.setData({ timer: ms, timerText: time.text, timerMain: time.main, timerTenths: time.tenths });
       });
       this.startGame();
     },
@@ -73,7 +82,7 @@ function createGamePage(options) {
       if (this.timer) this.timer.stop();
       this.setData({
         grid: grid, gridRows: this.buildRows(grid, null), solution: generated.solution,
-        selectedCell: null, timer: 0, timerText: '00:00.0', gameStarted: false,
+        selectedCell: null, timer: 0, timerText: '00:00.0', timerMain: '00:00', timerTenths: '0', gameStarted: false,
         isRunning: false, showResult: false, resultStatus: null
       });
     },
@@ -118,7 +127,7 @@ function createGamePage(options) {
         this.timer.pause();
         var usedSeconds = Math.floor(this.timer.get() / 1000);
         this.setData({ grid: grid, gridRows: this.buildRows(grid, this.data.selectedCell), isRunning: false, showResult: true, resultStatus: 'success' });
-        if (cloud.isReady()) cloud.saveProgress(mode, this.data.currentLevel, usedSeconds).catch(function () { storage.saveProgress(mode, this.data.currentLevel, usedSeconds); }.bind(this));
+        if (cloud.isReady() && store.getState('user')) cloud.saveProgress(mode, this.data.currentLevel, usedSeconds).catch(function () { storage.saveProgress(mode, this.data.currentLevel, usedSeconds); }.bind(this));
         else storage.saveProgress(mode, this.data.currentLevel, usedSeconds);
       } else {
         // 错误时只在棋盘标出错格，不弹窗、不改变其他格子的颜色。
@@ -128,6 +137,10 @@ function createGamePage(options) {
     nextLevel: function () {
       this.setData({ showResult: false });
       if (this.data.currentLevel >= 100) { this.setData({ showCongrats: true }); return; }
+      if (!store.getState('user') && this.data.currentLevel >= GUEST_LEVEL_LIMIT) {
+        auth.requireLogin('game' + mode);
+        return;
+      }
       var next = this.data.currentLevel + 1;
       this.setData({ currentLevel: next }); storage.setLevel(mode, next); this.startGame();
       this.setData({ gameStarted: true, isRunning: true });

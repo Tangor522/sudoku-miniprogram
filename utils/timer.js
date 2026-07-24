@@ -63,4 +63,9 @@ function formatStopwatch(ms) {
   return mStr + ':' + sStr + '.' + tenths;
 }
 
-module.exports = { createTimer: createTimer, formatStopwatch: formatStopwatch };
+function formatStopwatchParts(ms) {
+  var text = formatStopwatch(ms);
+  return { text: text, main: text.slice(0, -2), tenths: text.slice(-1) };
+}
+
+module.exports = { createTimer: createTimer, formatStopwatch: formatStopwatch, formatStopwatchParts: formatStopwatchParts };

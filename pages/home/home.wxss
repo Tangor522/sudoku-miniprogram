@@ -16,3 +16,49 @@
   .section-head{align-items:flex-start;flex-direction:column;gap:6rpx}
   .quick-row{grid-template-columns:1fr}
 }
+
+/* 内容驱动的现代机型适配，不再依赖某个具体手机预设。 */
+.home-container{width:100%;max-width:430px;padding-left:var(--page-gutter);padding-right:var(--page-gutter)}
+.brand-mark{width:var(--icon-md);height:var(--icon-md)}
+.brand-title{font-size:var(--font-lg)}
+.avatar-text,.mode-action::after{font-size:var(--font-md)}
+.brand-eyebrow,.section-sub,.quick-sub,.theme-value{font-size:var(--font-xs)}
+.hero-kicker,.mode-desc,.difficulty,.theme-label{font-size:var(--font-sm)}
+.hero-title{font-size:var(--font-xl)}
+.hero-sub,.mode-action,.quick-title{font-size:var(--font-sm)}
+.section-title,.mode-title{font-size:var(--font-lg)}
+.mode-grid,.quick-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+.mode-card,.quick-card,.pk-card{width:100%;min-width:0}
+.mode-icon{min-width:var(--icon-sm);height:var(--icon-sm);font-size:var(--font-sm)}
+.quick-icon,.pk-icon{width:var(--icon-sm);height:var(--icon-sm)}
+.pk-icon,.medal-icon view{font-size:var(--font-xs)}
+.quick-title,.quick-sub{white-space:normal;overflow-wrap:break-word}
+.theme-choice{min-width:var(--touch-min);min-height:var(--touch-min)}
+@media (max-width:374px){
+  .mode-grid,.quick-row{grid-template-columns:1fr}
+  .mode-nine{grid-column:auto}
+}
+
+/* 首页文字和图标触控尺寸统一提升。 */
+.home-container{padding-bottom:calc(72rpx + env(safe-area-inset-bottom))}
+.brand-eyebrow{font-size:23rpx}
+.hero-kicker{font-size:25rpx}
+.hero-sub{font-size:25rpx;line-height:1.55}
+.section-sub{font-size:23rpx}
+.mode-icon{height:62rpx;min-width:80rpx;font-size:26rpx}
+.difficulty{font-size:22rpx;padding:8rpx 15rpx}
+.mode-desc{font-size:24rpx;line-height:1.45}
+.mode-action{font-size:25rpx}
+.quick-icon,.pk-icon{width:66rpx;height:66rpx}
+.quick-title{font-size:26rpx}
+.quick-sub{font-size:22rpx;line-height:1.4}
+.theme-label{font-size:24rpx}
+.theme-value{font-size:22rpx}
+.theme-choice{width:70rpx;height:70rpx}
+.theme-dot{width:30rpx;height:30rpx}
+@media (max-width:360px){
+  .mode-grid{grid-template-columns:1fr}
+  .mode-nine{grid-column:auto}
+  .mode-card,.mode-nine{min-height:210rpx}
+  .hero-board{width:132rpx;height:132rpx}
+}

@@ -59,7 +59,7 @@ Page({
 
   goRanking: function () {
     if (!store.getState('user')) {
-      wx.navigateTo({ url: '/pages/login/login?from=ranking' });
+      wx.navigateTo({ url: auth.loginUrl('ranking') });
       return;
     }
     wx.navigateTo({ url: '/pages/ranking/ranking' });
@@ -67,7 +67,7 @@ Page({
 
   goPk: function () {
     if (!store.getState('user')) {
-      wx.navigateTo({ url: '/pages/login/login?from=pk' });
+      wx.navigateTo({ url: auth.loginUrl('pk') });
       return;
     }
     wx.navigateTo({ url: '/pages/pk_lobby/pk_lobby' });
@@ -75,7 +75,7 @@ Page({
 
   handleAvatarTap: function () {
     if (!store.getState('user')) {
-      wx.navigateTo({ url: '/pages/login/login?from=home' });
+      wx.navigateTo({ url: auth.loginUrl('home') });
       return;
     }
     this.handleLogout();
@@ -88,7 +88,7 @@ Page({
       success: function (res) {
         if (res.confirm) {
           auth.logout();
-          wx.redirectTo({ url: '/pages/login/login' });
+          wx.reLaunch({ url: '/pages/home/home' });
         }
       }
     });

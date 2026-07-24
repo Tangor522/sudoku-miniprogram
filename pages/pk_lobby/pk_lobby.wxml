@@ -1,7 +1,7 @@
 <view class="root theme-{{colorMode}} page-bg">
   <view class="lobby-container">
     <view class="lobby-head">
-      <view class="versus-mark">VS</view>
+      <view class="versus-mark"><text class="versus-text">VS</text></view>
       <view><text class="lobby-title">在线对战</text><text class="lobby-sub">同题竞技，先完成全部局数获胜</text></view>
     </view>
 

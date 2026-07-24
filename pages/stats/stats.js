@@ -1,6 +1,5 @@
 var store = require('../../utils/store');
 var theme = require('../../utils/theme');
-var auth = require('../../utils/auth');
 var cloud = require('../../utils/cloud');
 var storage = require('../../utils/storage');
 var timerUtil = require('../../utils/timer');
@@ -27,7 +26,6 @@ Page({
   },
 
   onShow: function () {
-    if (!auth.requireLogin()) return;
     theme.injectTheme(this);
     this.loadRecords();
   },
@@ -46,7 +44,7 @@ Page({
   loadRecords: function () {
     var that = this;
     var mode = this.data.gameMode;
-    if (cloud.isReady()) {
+    if (cloud.isReady() && store.getState('user')) {
       cloud.getStats(mode).then(function (list) {
         that.setData({ records: that.formatRecords(list) });
       }).catch(function (err) {

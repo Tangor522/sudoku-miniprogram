@@ -56,6 +56,14 @@ describe('utils/storage 本地存储封装', function () {
     expect(storage.getLevel('6x6')).toBe(1);
   });
 
+  test('登录同步云端关卡只推进不回退', function () {
+    storage.setLevel('4x4', 3);
+    expect(storage.syncLevelFromRecords('4x4', [{ level: 1 }, { level: 15 }])).toBe(16);
+    expect(storage.getLevel('4x4')).toBe(16);
+    expect(storage.syncLevelFromRecords('4x4', [{ level: 8 }])).toBe(16);
+    expect(storage.syncLevelFromRecords('4x4', [{ level: 100 }])).toBe(100);
+  });
+
   test('genLocalUser 生成 local_ 前缀的临时用户', function () {
     var u = storage.genLocalUser();
     expect(u.openid.indexOf('local_')).toBe(0);

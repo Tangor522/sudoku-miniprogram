@@ -14,25 +14,26 @@
 
     <block wx:else>
       <view wx:if="{{myRank}}" class="my-rank-card">
-        <view><text class="my-rank-label">我的排名</text><text class="my-rank-num">第 {{myRank.rank}} 名</text></view>
+        <view class="my-rank-main"><text class="my-rank-label">我的排名</text><view class="my-rank-value"><text class="my-rank-num">{{myRank.rank}}</text><text class="my-rank-suffix">名</text></view></view>
         <view class="my-rank-stats">
-          <view class="stat-item"><text class="stat-label">通过数</text><text class="stat-num">{{myRank.totalLevels}}</text></view>
-          <view class="stat-item"><text class="stat-label">总用时</text><text class="stat-num time">{{myRank.totalTimeText}}</text></view>
+          <view class="stat-item"><text class="stat-num">{{myRank.totalLevels}}</text><text class="stat-label">通关</text></view>
+          <view class="stat-divider"></view>
+          <view class="stat-item stat-time"><view class="digital-time light"><text>{{myRank.totalTimeMain}}</text><text class="time-dot">.</text><text class="time-tenths">{{myRank.totalTimeTenths}}</text></view><text class="stat-label">总用时</text></view>
         </view>
       </view>
 
       <view class="ranking-board">
-        <view class="rank-header"><view class="col-rank">名次</view><view class="col-player">玩家</view><view class="col-levels">通过数</view><view class="col-time">总用时</view></view>
+        <view class="board-head"><view><text class="board-title">排行榜</text><text class="board-sub">通关数优先 · 同关数用时更短优先</text></view><text class="board-count">{{rankings.length}} 人</text></view>
         <view wx:if="{{rankings.length === 0}}" class="empty"><view class="empty-rank">—</view><text>还没有排行数据</text><text class="empty-sub">完成第一关，成为首位上榜勇士</text></view>
         <view wx:else class="rank-list">
           <view wx:for="{{rankings}}" wx:key="rank" class="rank-row {{item.isMe ? 'rank-row-me' : ''}}">
             <view class="col-rank"><view class="rank-badge rank-{{item.rank <= 3 ? item.rank : 'normal'}}">{{item.rank}}</view></view>
-            <view class="col-player">
+            <view class="player-cell">
               <image wx:if="{{item.avatarUrl}}" class="player-avatar" src="{{item.avatarUrl}}" mode="aspectFill"></image>
               <view wx:else class="player-avatar player-avatar-placeholder"><view></view></view>
-              <text class="player-name">{{item.nickName}}</text>
+              <view class="player-info"><text class="player-name">{{item.nickName}}</text><text class="player-levels">{{item.totalLevels}} 关</text></view>
             </view>
-            <view class="col-levels">{{item.totalLevels}}</view><view class="col-time">{{item.totalTimeText}}</view>
+            <view class="row-time"><view class="digital-time"><text>{{item.totalTimeMain}}</text><text class="time-dot">.</text><text class="time-tenths">{{item.totalTimeTenths}}</text></view><text class="row-time-label">总用时</text></view>
           </view>
         </view>
       </view>

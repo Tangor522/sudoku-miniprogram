@@ -20,7 +20,7 @@ Page({
     this.unsubTheme = store.subscribe('colorMode', function (m) { that.setData({ colorMode: m }); });
   },
   onShow: function () {
-    if (!auth.requireLogin()) return;
+    if (!auth.requireLogin('pk')) return;
     theme.injectTheme(this);
   },
   onUnload: function () {

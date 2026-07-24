@@ -58,6 +58,19 @@ function setLevel(mode, level) {
   saveAll(all);
 }
 
+// 登录后把云端已完成关卡合并到本机。只允许推进，避免覆盖本机更高进度。
+function syncLevelFromRecords(mode, records) {
+  var maxCompleted = 0;
+  (records || []).forEach(function (record) {
+    var level = Number(record && record.level);
+    if (level >= 1 && level <= 100 && level > maxCompleted) maxCompleted = level;
+  });
+  var cloudNext = maxCompleted ? Math.min(100, maxCompleted + 1) : 1;
+  var merged = Math.max(getLevel(mode), cloudNext);
+  setLevel(mode, merged);
+  return merged;
+}
+
 // 生成本地临时用户（云开发未开通时用）
 function genLocalUser() {
   var id = 'local_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
@@ -71,5 +84,6 @@ module.exports = {
   getStats: getStats,
   getLevel: getLevel,
   setLevel: setLevel,
+  syncLevelFromRecords: syncLevelFromRecords,
   genLocalUser: genLocalUser
 };

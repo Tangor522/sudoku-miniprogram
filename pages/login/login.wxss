@@ -1,6 +1,30 @@
 .root{min-height:100vh;position:relative;overflow:hidden}.login-orb{position:fixed;border-radius:50%;filter:blur(18rpx);opacity:.46}.orb-one{width:430rpx;height:430rpx;right:-230rpx;top:-150rpx;background:var(--accent-soft)}.orb-two{width:330rpx;height:330rpx;left:-220rpx;bottom:-80rpx;background:var(--secondary-soft)}.login-container{min-height:100vh;max-width:650rpx;margin:auto;padding:56rpx 42rpx 70rpx;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box;position:relative;z-index:1}
 .logo{display:flex;flex-direction:column;align-items:center;margin-bottom:52rpx}.logo-mark{width:108rpx;height:108rpx;padding:18rpx;border-radius:34rpx;display:grid;grid-template-columns:1fr 1fr;gap:7rpx;box-sizing:border-box;background:linear-gradient(135deg,var(--primary-from),var(--primary-to));box-shadow:0 18rpx 38rpx var(--primary-shadow)}.logo-mark view{border-radius:6rpx;background:#fff}.logo-mark view:nth-child(2),.logo-mark view:nth-child(3){opacity:.55}.logo-title{font-size:47rpx;color:var(--text-main);font-weight:900;margin-top:24rpx}.logo-sub{font-size:22rpx;color:var(--text-muted);margin-top:10rpx}
 .panel{width:100%;padding:46rpx 34rpx 36rpx;border-radius:36rpx;display:flex;flex-direction:column;align-items:center;background:rgba(255,255,255,.95);border:1rpx solid rgba(255,255,255,.95);box-shadow:var(--shadow-card);box-sizing:border-box}.panel-title,.profile-title{font-size:37rpx;color:var(--text-main);font-weight:900}.profile-sub,.login-desc{font-size:23rpx;color:var(--text-muted);text-align:center;margin-top:10rpx}.login-desc{margin-bottom:34rpx}.login-btn,.save-btn{width:100%}.local-tip{font-size:20rpx;color:var(--text-faint);margin-top:22rpx}
+.login-error{font-size:22rpx;color:var(--error-color);text-align:center;margin-top:18rpx}
 .avatar-wrapper{width:142rpx;height:142rpx;padding:0;margin:34rpx 0 0;position:relative;border-radius:45rpx;background:var(--surface-soft);overflow:visible}.avatar-wrapper::after{border:0}.avatar{width:142rpx;height:142rpx;border-radius:45rpx;background:var(--surface-strong);display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}.avatar-placeholder{position:relative}.avatar-head{width:43rpx;height:43rpx;border-radius:50%;background:var(--primary-solid);opacity:.55}.avatar-body{width:78rpx;height:48rpx;border-radius:42rpx 42rpx 16rpx 16rpx;background:var(--primary-solid);opacity:.35;margin-top:8rpx}.avatar-edit{position:absolute;right:-8rpx;bottom:-8rpx;width:43rpx;height:43rpx;border-radius:15rpx;display:flex;align-items:center;justify-content:center;background:var(--primary-solid);border:5rpx solid #fff;color:#fff;font-size:27rpx;font-weight:700;box-sizing:border-box}.avatar-tip{font-size:20rpx;color:var(--text-muted);margin-top:14rpx}
 .nick-field{width:100%;margin-top:34rpx;padding:20rpx 22rpx;border-radius:22rpx;display:flex;align-items:center;background:var(--surface-soft);box-sizing:border-box}.nick-label{width:86rpx;font-size:25rpx;color:var(--text-main);font-weight:800}.nick-input{flex:1;font-size:28rpx;color:var(--text-main)}.save-btn{margin-top:28rpx}.skip-btn{font-size:24rpx;color:var(--text-muted);padding:25rpx 28rpx 6rpx}
 .silent-box{display:flex;flex-direction:column;align-items:center}.silent-spinner{width:54rpx;height:54rpx;border:5rpx solid var(--surface-strong);border-top-color:var(--primary-solid);border-radius:50%;animation:spin .8s linear infinite}.silent-text{font-size:23rpx;color:var(--text-muted);margin-top:22rpx}
+
+/* 登录页在小屏和大字号下保持可读、可点。 */
+.login-container{width:100%;padding:48rpx 32rpx calc(64rpx + env(safe-area-inset-bottom))}
+.logo{margin-bottom:44rpx}
+.logo-sub{font-size:26rpx;line-height:1.5;text-align:center}
+.panel{padding:44rpx 32rpx 34rpx}
+.panel-title{font-size:40rpx;line-height:1.3}
+.login-desc{font-size:27rpx;line-height:1.65;margin-top:14rpx;margin-bottom:34rpx}
+.skip-btn{min-height:88rpx;padding:24rpx 30rpx;display:flex;align-items:center;justify-content:center;font-size:27rpx}
+.local-tip,.login-error{font-size:24rpx;line-height:1.5;text-align:center}
+@media (max-width:360px){
+  .login-container{padding-left:24rpx;padding-right:24rpx}
+  .logo-mark{width:96rpx;height:96rpx}
+  .logo-title{font-size:43rpx}
+  .panel{padding-left:26rpx;padding-right:26rpx}
+}
+
+.login-container{max-width:430px;padding-left:var(--page-gutter);padding-right:var(--page-gutter)}
+.logo-mark{width:var(--icon-lg);height:var(--icon-lg)}
+.logo-title,.panel-title{font-size:var(--font-xl)}
+.logo-sub,.login-desc,.skip-btn{font-size:var(--font-md)}
+.local-tip,.login-error{font-size:var(--font-sm)}
+.login-btn,.skip-btn{min-height:var(--touch-min)}
