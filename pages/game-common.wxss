@@ -28,7 +28,7 @@
 .result-time{font-size:var(--font-xl)}
 .result-time{display:flex;align-items:baseline;justify-content:center;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:0}
 .result-time-dot{padding:0 2rpx}
-.result-time-tenths{font-size:.72em;font-weight:800}
+.result-time-tenths{font-size:1em;font-weight:850}
 .start-game-btn,.submit-btn,.num-btn{min-height:var(--touch-min)}
 .board-card,.grid,.numpad,.numpad-row{width:100%;min-width:0}
 .modal-card{max-width:calc(100vw - var(--page-gutter) - var(--page-gutter))}

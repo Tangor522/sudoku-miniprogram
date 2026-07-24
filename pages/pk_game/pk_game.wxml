@@ -3,7 +3,7 @@
 
   <view wx:else class="game-container">
     <view class="battle-head">
-      <view class="exit-btn" bindtap="surrender">退出对战</view>
+      <view class="exit-btn" bindtap="exitBattle">{{gamePhase === 'playing' ? '认输' : '退出对战'}}</view>
       <view class="round-info"><text>{{mode}}</text><text class="round-count">{{totalRounds}} 局</text></view>
       <view class="timer"><view class="timer-dot"></view>{{timerText}}</view>
     </view>

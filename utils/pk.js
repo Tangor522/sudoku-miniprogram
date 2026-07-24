@@ -39,6 +39,9 @@ function reconnect(matchId) {
 function surrender(matchId) {
   return callFn('pkState', { action: 'surrender', matchId: matchId });
 }
+function leaveBeforeStart(matchId) {
+  return callFn('pkState', { action: 'leaveBeforeStart', matchId: matchId });
+}
 function markOffline(matchId) {
   return callFn('pkState', { action: 'markOffline', matchId: matchId });
 }
@@ -132,7 +135,7 @@ module.exports = {
   randomMatch: randomMatch, createRoom: createRoom, joinRoom: joinRoom, cancelMatch: cancelMatch,
   setReady: setReady,
   submitRound: submitRound,
-  reconnect: reconnect, surrender: surrender, markOffline: markOffline, timeoutLoss: timeoutLoss,
+  reconnect: reconnect, surrender: surrender, leaveBeforeStart: leaveBeforeStart, markOffline: markOffline, timeoutLoss: timeoutLoss,
   getRecords: getRecords, getStats: getStats,
   pollMatch: pollMatch, syncProgress: syncProgress, forceSync: forceSync, heartbeat: heartbeat,
   setActiveMatch: setActiveMatch, getActiveMatch: getActiveMatch, clearActiveMatch: clearActiveMatch

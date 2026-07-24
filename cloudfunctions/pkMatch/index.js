@@ -3,6 +3,7 @@ const cloud = require('wx-server-sdk');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
 const sudoku = require('./sudoku.js');
+const ONLINE_TTL_MS = 15000;
 
 function genRoomCode() {
   var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -67,7 +68,9 @@ exports.main = async (event) => {
 
       for (var i = 0; i < waiting.data.length; i++) {
         var m = waiting.data[i];
-        if (m.players && m.players.length === 1 && m.players[0].openid !== openid) {
+        var owner = m.players && m.players[0];
+        var ownerOnline = owner && owner.connected !== false && Date.now() - (owner.lastActive || m.updatedAt || m.createdAt || 0) <= ONLINE_TTL_MS;
+        if (ownerOnline && m.players.length === 1 && owner.openid !== openid) {
           var result = await db.runTransaction(async transaction => {
             var doc = await transaction.collection('matches').doc(m._id).get();
             var match = doc.data;
@@ -190,7 +193,13 @@ exports.main = async (event) => {
 
     // === 取消匹配/离开房间 ===
     if (action === 'cancelMatch') {
-      await col.where({ _id: event.matchId, status: 'matching' }).update({ data: { status: 'cancelled', updatedAt: Date.now() } });
+      var cancelDoc = await col.doc(event.matchId).get();
+      var cancelMatch = cancelDoc.data;
+      if (!cancelMatch || !cancelMatch.players || !cancelMatch.players.some(function (p) { return p.openid === openid; })) {
+        return { ok: false, error: '无权取消该匹配' };
+      }
+      if (cancelMatch.status !== 'matching') return { ok: false, error: '匹配已结束' };
+      await col.doc(event.matchId).update({ data: { status: 'cancelled', updatedAt: Date.now() } });
       return { ok: true };
     }
 

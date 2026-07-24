@@ -90,8 +90,10 @@ Page({
     if (this.poller) { this.poller.close(); this.poller = null; }
     if (this.heartbeatTimer) { clearInterval(this.heartbeatTimer); this.heartbeatTimer = null; }
     if (this.unsubTheme) this.unsubTheme();
-    if (this.matchId && !this.data.showFinal) {
-      pk.surrender(this.matchId);
+    // 页面卸载可能由系统回收、跳转或异常中断触发，不能据此判定玩家主动认输。
+    // 但准备阶段尚未形成有效比赛，可安全取消，避免把对手留在失效房间。
+    if (this.matchId && this.data.gamePhase === 'readying') {
+      pk.leaveBeforeStart(this.matchId);
       pk.clearActiveMatch();
     }
   },
@@ -213,6 +215,15 @@ Page({
 
   onMatchUpdate: function (doc) {
     var that = this;
+
+    if (doc.status === 'cancelled') {
+      if (this.poller) { this.poller.close(); this.poller = null; }
+      pk.clearActiveMatch();
+      this.matchId = null;
+      wx.showToast({ title: '对手已退出对战', icon: 'none' });
+      setTimeout(function () { wx.navigateBack({ delta: 1 }); }, 800);
+      return;
+    }
 
     // 整场结束
     if (doc.status === 'finished') {
@@ -440,13 +451,20 @@ Page({
     wx.navigateBack({ delta: 2 });
   },
 
-  surrender: function () {
+  exitBattle: function () {
     var that = this;
+    var isPlaying = this.data.gamePhase === 'playing';
     wx.showModal({
-      title: '确认', content: '确定认输吗？',
+      title: '确认',
+      content: isPlaying ? '确定认输吗？本局将判对手获胜。' : '确定退出对战吗？退出不会计入战绩。',
       success: function (res) {
         if (res.confirm) {
-          pk.surrender(that.matchId).then(function () {
+          var request = isPlaying ? pk.surrender(that.matchId) : pk.leaveBeforeStart(that.matchId);
+          request.then(function (result) {
+            if (!result || !result.ok) {
+              wx.showToast({ title: (result && result.error) || '退出失败', icon: 'none' });
+              return;
+            }
             pk.clearActiveMatch();
             that.matchId = null;
             wx.navigateBack({ delta: 1 });

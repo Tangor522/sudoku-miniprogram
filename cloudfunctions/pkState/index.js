@@ -22,8 +22,25 @@ exports.main = async (event) => {
 
     // === 轮询拉取对局数据（替代 watch，无需集合读权限） ===
     if (action === 'getMatch') {
+      // 轮询本身代表客户端仍在线。等待匹配时持续续期，供随机匹配过滤异常退出留下的旧房间。
+      if (match.status === 'matching') {
+        var presenceUpd = {};
+        presenceUpd['players.' + slot + '.lastActive'] = Date.now();
+        presenceUpd['players.' + slot + '.connected'] = true;
+        await col.doc(matchId).update({ data: presenceUpd });
+      }
       var freshDoc = await col.doc(matchId).get();
       return { ok: true, match: freshDoc.data };
+    }
+
+    // 双方准备前退出只是取消本次对战，不计认输、也不写战绩。
+    if (action === 'leaveBeforeStart') {
+      if (match.status !== 'playing') return { ok: false, error: '对局状态异常' };
+      var states = match.playerStates || {};
+      var started = !!((states['0'] || {}).ready && (states['1'] || {}).ready);
+      if (started) return { ok: false, error: '对局已开始，请使用认输' };
+      await col.doc(matchId).update({ data: { status: 'cancelled', cancelledBy: openid, updatedAt: Date.now() } });
+      return { ok: true };
     }
 
     // === 同步棋盘进度（替代客户端 db.update，无需集合写权限） ===
