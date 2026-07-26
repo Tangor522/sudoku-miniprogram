@@ -63,4 +63,41 @@ function check9x9(grid) {
   return { hasError: hasError, errorCells: errorCells, isComplete: isComplete };
 }
 
-module.exports = { check4x4: check4x4, check6x6: check6x6, check9x9: check9x9 };
+function solvePuzzle(puzzle, mode) {
+  var cfg = { '4x4': [4, 2, 2], '6x6': [6, 2, 3], '9x9': [9, 3, 3] }[mode];
+  if (!cfg || !Array.isArray(puzzle) || puzzle.length !== cfg[0]) return null;
+  var solved = puzzle.map(function (row) { return row.slice(); });
+
+  function canPlace(row, col, value) {
+    for (var i = 0; i < cfg[0]; i++) {
+      if (solved[row][i] === value || solved[i][col] === value) return false;
+    }
+    var startRow = Math.floor(row / cfg[1]) * cfg[1];
+    var startCol = Math.floor(col / cfg[2]) * cfg[2];
+    for (var r = 0; r < cfg[1]; r++) {
+      for (var c = 0; c < cfg[2]; c++) if (solved[startRow + r][startCol + c] === value) return false;
+    }
+    return true;
+  }
+
+  function solve() {
+    var empty = null;
+    for (var r = 0; r < cfg[0] && !empty; r++) {
+      for (var c = 0; c < cfg[0]; c++) {
+        if (solved[r][c] === 0) { empty = { row: r, col: c }; break; }
+      }
+    }
+    if (!empty) return true;
+    for (var value = 1; value <= cfg[0]; value++) {
+      if (!canPlace(empty.row, empty.col, value)) continue;
+      solved[empty.row][empty.col] = value;
+      if (solve()) return true;
+      solved[empty.row][empty.col] = 0;
+    }
+    return false;
+  }
+
+  return solve() ? solved : null;
+}
+
+module.exports = { check4x4: check4x4, check6x6: check6x6, check9x9: check9x9, solvePuzzle: solvePuzzle };

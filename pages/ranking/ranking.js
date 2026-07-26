@@ -48,8 +48,11 @@ Page({
 
   loadRanking: function () {
     var that = this;
+    var requestId = (this.rankingRequestId || 0) + 1;
+    this.rankingRequestId = requestId;
     this.setData({ loading: true, error: '' });
-    cloud.getRanking().then(function (res) {
+    return cloud.getRanking().then(function (res) {
+      if (that.rankingRequestId !== requestId) return;
       var list = (res.list || []).map(function (item) {
         var time = formatTimeParts(item.totalTime);
         return {
@@ -77,6 +80,7 @@ Page({
       });
     }).catch(function (err) {
       console.error('排行榜加载失败', err);
+      if (that.rankingRequestId !== requestId) return;
       that.setData({
         loading: false,
         error: '加载失败，请下拉刷新重试'
@@ -86,13 +90,15 @@ Page({
 
   // 下拉刷新
   onPullDownRefresh: function () {
-    var that = this;
     if (cloud.isReady()) {
-      this.loadRanking();
+      this.loadRanking().then(function () {
+        wx.stopPullDownRefresh();
+      }, function () {
+        wx.stopPullDownRefresh();
+      });
+      return;
     }
-    setTimeout(function () {
-      wx.stopPullDownRefresh();
-    }, 1000);
+    wx.stopPullDownRefresh();
   },
 
   // 说明在线排行状态

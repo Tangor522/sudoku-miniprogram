@@ -83,7 +83,7 @@ Page({
 
   handleLogout: function () {
     wx.showModal({
-      title: '提示',
+      title: '退出登录',
       content: '确定退出登录吗？',
       success: function (res) {
         if (res.confirm) {

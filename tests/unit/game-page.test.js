@@ -85,4 +85,75 @@ describe('单人模式提交校验', function () {
     expect(page.startGame).toHaveBeenCalled();
     expect(wx.redirectTo).not.toHaveBeenCalled();
   });
+
+  test('退回只保留最近操作的 3 个不同位置，同一位置多次改数只回退一次', function () {
+    var grid = cells(SOL4, { '0-0': true, '0-1': true, '0-2': true, '0-3': true });
+    grid[0].forEach(function (cell) { cell.value = 0; });
+    var page = makePage(grid);
+    page.data.gameStarted = true;
+    page.data.selectedCell = { row: 0, col: 0 };
+    page.setCellValue(1);
+    page.setCellValue(2);
+    expect(page.undoHistory).toHaveLength(1);
+    page.data.selectedCell = { row: 0, col: 1 };
+    page.setCellValue(2);
+    page.data.selectedCell = { row: 0, col: 2 };
+    page.setCellValue(3);
+    page.data.selectedCell = { row: 0, col: 3 };
+    page.setCellValue(4);
+    expect(page.undoHistory).toHaveLength(3);
+    page.undoLast();
+    expect(page.data.grid[0][3].value).toBe(0);
+    page.undoLast();
+    expect(page.data.grid[0][2].value).toBe(0);
+    page.undoLast();
+    expect(page.data.grid[0][1].value).toBe(0);
+    page.undoLast();
+    expect(page.data.grid[0][0].value).toBe(2);
+    expect(page.data.canUndo).toBe(false);
+  });
+
+  test('再次操作已有位置会更新最近顺序，但仍恢复第一次修改前的值', function () {
+    var grid = cells(SOL4, { '0-0': true, '0-1': true });
+    grid[0][0].value = 0;
+    grid[0][1].value = 0;
+    var page = makePage(grid);
+    page.data.gameStarted = true;
+    page.data.selectedCell = { row: 0, col: 0 };
+    page.setCellValue(1);
+    page.data.selectedCell = { row: 0, col: 1 };
+    page.setCellValue(2);
+    page.data.selectedCell = { row: 0, col: 0 };
+    page.setCellValue(3);
+    expect(page.undoHistory).toHaveLength(2);
+    page.undoLast();
+    expect(page.data.grid[0][0].value).toBe(0);
+    page.undoLast();
+    expect(page.data.grid[0][1].value).toBe(0);
+  });
+
+  test('重复填相同数字不占用退回次数，退回会清除错误标记', function () {
+    var grid = cells(SOL4, { '0-0': true, '0-1': true });
+    grid[0][0].value = 0;
+    grid[0][1].error = true;
+    var page = makePage(grid);
+    page.data.gameStarted = true;
+    page.data.selectedCell = { row: 0, col: 0 };
+    page.setCellValue(2);
+    page.setCellValue(2);
+    expect(page.undoHistory).toHaveLength(1);
+    page.undoLast();
+    expect(page.data.grid[0][0].value).toBe(0);
+    expect(page.data.grid[0][1].error).toBe(false);
+  });
+
+  test('进入新关卡后不能退回上一关的操作', function () {
+    var page = makePage(cells(SOL4, {}));
+    page.undoHistory = [{ row: 0, col: 0, value: 0 }];
+    page.data.canUndo = true;
+    page.timer = { stop: jest.fn() };
+    page.startGame();
+    expect(page.undoHistory).toEqual([]);
+    expect(page.data.canUndo).toBe(false);
+  });
 });

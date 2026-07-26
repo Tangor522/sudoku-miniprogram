@@ -18,7 +18,7 @@
           <view class="grid-row">
             <block wx:for="{{row}}" wx:for-item="cell" wx:key="col">
               <view class="cell-wrap {{cell.borderLeft ? 'border-left' : ''}} {{cell.borderTop ? 'border-top' : ''}}">
-                <view class="cell {{cell.fixed ? 'cell-fixed' : 'cell-input'}} {{cell.error ? 'cell-error' : ''}} {{cell.selected ? 'cell-selected' : ''}}"
+                <view class="cell {{cell.fixed ? 'cell-fixed' : 'cell-input'}} {{cell.error ? 'cell-error' : ''}} {{cell.selected ? 'cell-selected' : ''}}" role="button" aria-label="第 {{cell.row + 1}} 行第 {{cell.col + 1}} 列，{{cell.fixed ? '固定数字 ' + cell.value : (cell.value ? '已填 ' + cell.value : '空格')}}"
                   data-row="{{cell.row}}" data-col="{{cell.col}}" bindtap="selectCell">
                   <text class="cell-text">{{cell.value || ''}}</text>
                 </view>
@@ -31,10 +31,13 @@
 
     <view wx:if="{{gameStarted}}" class="numpad">
       <view wx:for="{{numberRows}}" wx:for-item="numberRow" wx:key="index" class="numpad-row">
-        <view wx:for="{{numberRow}}" wx:key="*this" class="num-btn" data-num="{{item}}" bindtap="onNumberClick">{{item}}</view>
+        <view wx:for="{{numberRow}}" wx:key="*this" class="num-btn" role="button" aria-label="填入数字 {{item}}" hover-class="tap-active" data-num="{{item}}" bindtap="onNumberClick">{{item}}</view>
       </view>
     </view>
-    <button wx:if="{{gameStarted}}" class="submit-btn" bindtap="checkAnswer">提交答案</button>
+    <view wx:if="{{gameStarted}}" class="game-actions">
+      <button class="undo-btn" disabled="{{!canUndo}}" bindtap="undoLast">退回</button>
+      <button class="submit-btn" bindtap="checkAnswer">提交答案</button>
+    </view>
   </view>
 
   <view wx:if="{{showResult}}" class="mask">

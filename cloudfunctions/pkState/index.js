@@ -47,6 +47,9 @@ exports.main = async (event) => {
     if (action === 'syncProgress') {
       if (match.status !== 'playing') return { ok: false, error: '对局已结束' };
       var grid = event.grid;
+      var syncRound = Number(event.round);
+      var currentRound = ((match.playerStates['' + slot] || {}).currentRound || 1);
+      if (syncRound !== currentRound) return { ok: false, stale: true, error: '局数已更新' };
       var sizeMap = { '4x4': 4, '6x6': 6, '9x9': 9 };
       var size = sizeMap[match.mode];
       if (!size) return { ok: false, error: '不支持的对战模式' };
@@ -55,6 +58,7 @@ exports.main = async (event) => {
       })) return { ok: false, error: '棋盘数据无效' };
       var syncUpd = {};
       syncUpd['progress.' + slot + '.grid'] = grid;
+      syncUpd['progress.' + slot + '.round'] = currentRound;
       syncUpd['progress.' + slot + '.updatedAt'] = Date.now();
       await col.doc(matchId).update({ data: syncUpd });
       return { ok: true };

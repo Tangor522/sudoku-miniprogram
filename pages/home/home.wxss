@@ -20,6 +20,8 @@
 /* 内容驱动的现代机型适配，不再依赖某个具体手机预设。 */
 .home-container{width:100%;max-width:430px;padding-left:var(--page-gutter);padding-right:var(--page-gutter)}
 .brand-mark{width:var(--icon-md);height:var(--icon-md)}
+.avatar-wrap,.avatar{width:var(--touch-min);height:var(--touch-min)}
+.avatar-wrap{display:flex;align-items:center;justify-content:center}
 .brand-title{font-size:var(--font-lg)}
 .avatar-text,.mode-action::after{font-size:var(--font-md)}
 .brand-eyebrow,.section-sub,.quick-sub,.theme-value{font-size:var(--font-xs)}

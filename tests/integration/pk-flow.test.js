@@ -12,7 +12,6 @@ const pkMatch = require('../../cloudfunctions/pkMatch/index').main;
 const pkState = require('../../cloudfunctions/pkState/index').main;
 const pkSubmit = require('../../cloudfunctions/pkSubmit/index').main;
 
-var SOL4 = [[1, 2, 3, 4], [3, 4, 1, 2], [2, 1, 4, 3], [4, 3, 2, 1]];
 var A = 'test-openid-001';
 var B = 'test-openid-002';
 
@@ -20,10 +19,7 @@ function asUser(openid) {
   cloud.getWXContext = function () { return { OPENID: openid, APPID: 'x' }; };
 }
 function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
-// pkMatch 生成的是随机模板题，SIT 中将其固定为已知完整解 SOL4 以便确定性提交
-function setPuzzle(grid) {
-  mockStore.matches[0].rounds.forEach(function (r) { r.puzzle = grid; });
-}
+function roundSolution(index) { return mockStore.matches[0].rounds[index].solution; }
 
 describe('SIT：双人对战完整流程', function () {
   beforeEach(function () {
@@ -55,11 +51,10 @@ describe('SIT：双人对战完整流程', function () {
     expect(ra.myReady).toBe(true);
     expect(rb.bothReady).toBe(true);
 
-    // 4) 注入已知题目后，A 连续完成 N 局（B 不提交）
-    setPuzzle(SOL4);
+    // 4) A 按每局云端保存的唯一正解连续完成 N 局（B 不提交）
     asUser(A);
     for (var i = 0; i < N; i++) {
-      var res = await pkSubmit({ matchId: matchId, grid: SOL4 });
+      var res = await pkSubmit({ matchId: matchId, grid: roundSolution(i) });
       expect(res.ok).toBe(true);
       if (i < N - 1) expect(res.matchFinished).toBe(false);
     }
@@ -87,16 +82,16 @@ describe('SIT：双人对战完整流程', function () {
     asUser(A); await pkState({ action: 'setReady', matchId: matchId });
     asUser(B); await pkState({ action: 'setReady', matchId: matchId });
 
-    // 注入已知题目后，B 先提交
-    setPuzzle(SOL4);
+    // B 按该局唯一正解先提交
+    var solution = roundSolution(0);
     asUser(B);
-    var resB = await pkSubmit({ matchId: matchId, grid: SOL4 });
+    var resB = await pkSubmit({ matchId: matchId, grid: solution });
     expect(resB.matchFinished).toBe(true);
     expect(resB.winnerSlot).toBe(1);
 
     // A 再提交应被拒绝（对局已结束）
     asUser(A);
-    var resA = await pkSubmit({ matchId: matchId, grid: SOL4 });
+    var resA = await pkSubmit({ matchId: matchId, grid: solution });
     expect(resA.ok).toBe(false);
     expect(resA.error).toContain('已结束');
   });
@@ -143,10 +138,10 @@ describe('SIT：双人对战完整流程', function () {
     asUser(A); await pkState({ action: 'setReady', matchId: matchId });
     asUser(B); await pkState({ action: 'setReady', matchId: matchId });
 
-    // 注入已知题目后，几乎同时提交（模拟并发）
-    setPuzzle(SOL4);
-    asUser(A); var pA = pkSubmit({ matchId: matchId, grid: SOL4 });
-    asUser(B); var pB = pkSubmit({ matchId: matchId, grid: SOL4 });
+    // 双方用同一局唯一正解几乎同时提交（模拟并发）
+    var solution = roundSolution(0);
+    asUser(A); var pA = pkSubmit({ matchId: matchId, grid: solution });
+    asUser(B); var pB = pkSubmit({ matchId: matchId, grid: solution });
     var results = await Promise.all([pA, pB]);
     // 其中恰好一个完成结算
     var finishedCount = results.filter(function (r) { return r.matchFinished; }).length;

@@ -15,7 +15,8 @@ Page({
   data: {
     colorMode: 'normal',
     gameMode: '4x4',
-    records: []
+    records: [],
+    loading: false
   },
 
   onLoad: function () {
@@ -44,15 +45,20 @@ Page({
   loadRecords: function () {
     var that = this;
     var mode = this.data.gameMode;
+    var requestId = (this.recordsRequestId || 0) + 1;
+    this.recordsRequestId = requestId;
     if (cloud.isReady() && store.getState('user')) {
+      this.setData({ loading: true });
       cloud.getStats(mode).then(function (list) {
-        that.setData({ records: that.formatRecords(list) });
+        if (that.recordsRequestId !== requestId || that.data.gameMode !== mode) return;
+        that.setData({ records: that.formatRecords(list), loading: false });
       }).catch(function (err) {
         console.error('云端查询失败，降级本地', err);
-        that.setData({ records: that.formatRecords(storage.getStats(mode)) });
+        if (that.recordsRequestId !== requestId || that.data.gameMode !== mode) return;
+        that.setData({ records: that.formatRecords(storage.getStats(mode)), loading: false });
       });
     } else {
-      this.setData({ records: this.formatRecords(storage.getStats(mode)) });
+      this.setData({ records: this.formatRecords(storage.getStats(mode)), loading: false });
     }
   },
 

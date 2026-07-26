@@ -120,13 +120,26 @@ describe('云函数 pkState', function () {
       matches.push(m);
 
       var grid = [[1,2,3,4],[3,4,1,2],[2,1,4,3],[4,3,2,1]];
-      var res = await handler({ action: 'syncProgress', matchId: 'match-test-001', grid: grid });
+      var res = await handler({ action: 'syncProgress', matchId: 'match-test-001', grid: grid, round: 1 });
       expect(res.ok).toBe(true);
 
       // 验证数据已写入
       var fresh = matches[0];
       expect(fresh.progress['0'].grid).toEqual(grid);
+      expect(fresh.progress['0'].round).toBe(1);
       expect(fresh.progress['0'].updatedAt).toBeGreaterThan(0);
+    });
+
+    test('上一局延迟到达的进度不应覆盖当前局', async function () {
+      var m = createTestMatch();
+      m.playerStates['0'].currentRound = 2;
+      var original = m.progress['0'].grid;
+      matches.push(m);
+      var staleGrid = [[1,2,3,4],[3,4,1,2],[2,1,4,3],[4,3,2,1]];
+      var res = await handler({ action: 'syncProgress', matchId: 'match-test-001', grid: staleGrid, round: 1 });
+      expect(res.ok).toBe(false);
+      expect(res.stale).toBe(true);
+      expect(matches[0].progress['0'].grid).toBe(original);
     });
 
     test('对局已结束时不应同步', async function () {

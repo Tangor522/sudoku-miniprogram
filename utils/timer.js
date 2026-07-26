@@ -19,10 +19,12 @@ function createTimer(onTick) {
   }
 
   return {
-    start: function () {
+    start: function (initialElapsed) {
       if (running) return;
+      if (typeof initialElapsed === 'number' && initialElapsed >= 0) elapsed = initialElapsed;
       startTime = Date.now();
       running = true;
+      tick();
       id = setInterval(tick, 50); // 50ms 刷新一次，秒表流畅
     },
     pause: function () {
@@ -44,6 +46,11 @@ function createTimer(onTick) {
       elapsed = 0;
       running = false;
       return r; // 返回总毫秒数
+    },
+    setElapsed: function (ms) {
+      elapsed = typeof ms === 'number' && ms > 0 ? ms : 0;
+      if (running) startTime = Date.now();
+      tick();
     },
     get: function () { return getCurrentElapsed(); },
     // 返回秒数（兼容旧调用）

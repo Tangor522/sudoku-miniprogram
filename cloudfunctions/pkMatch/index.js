@@ -22,7 +22,10 @@ function genRounds(mode, totalRounds) {
   var gen = generators[mode];
   var rounds = [];
   for (var i = 0; i < totalRounds; i++) {
-    rounds.push({ puzzle: gen(20) });
+    var puzzle = gen(20);
+    var solution = sudoku.solvePuzzle(puzzle, mode);
+    if (!solution || sudoku.countSolutions(puzzle, mode, 2) !== 1) throw new Error('题目唯一性校验失败');
+    rounds.push({ puzzle: puzzle, solution: solution });
   }
   return rounds;
 }

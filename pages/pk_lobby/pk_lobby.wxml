@@ -5,21 +5,23 @@
       <view><text class="lobby-title">在线对战</text><text class="lobby-sub">同题竞技，先完成全部局数获胜</text></view>
     </view>
 
-    <view class="card section">
+    <view wx:if="{{isLocalMode}}" class="service-tip">当前无法连接在线对战服务，单人挑战仍可正常使用</view>
+
+    <view class="card section {{matching || busyAction ? 'selection-locked' : ''}}">
       <view class="section-label">选择棋盘</view>
       <view class="opt-row">
-        <view class="opt-btn {{mode === '4x4' ? 'active' : ''}}" data-mode="4x4" bindtap="setMode"><text>4×4</text><text class="opt-name">四宫格</text></view>
-        <view class="opt-btn {{mode === '6x6' ? 'active' : ''}}" data-mode="6x6" bindtap="setMode"><text>6×6</text><text class="opt-name">六宫格</text></view>
-        <view class="opt-btn {{mode === '9x9' ? 'active' : ''}}" data-mode="9x9" bindtap="setMode"><text>9×9</text><text class="opt-name">九宫格</text></view>
+        <view class="opt-btn {{mode === '4x4' ? 'active' : ''}}" role="button" aria-label="选择四宫格" hover-class="tap-active" data-mode="4x4" bindtap="setMode"><text>4×4</text><text class="opt-name">四宫格</text></view>
+        <view class="opt-btn {{mode === '6x6' ? 'active' : ''}}" role="button" aria-label="选择六宫格" hover-class="tap-active" data-mode="6x6" bindtap="setMode"><text>6×6</text><text class="opt-name">六宫格</text></view>
+        <view class="opt-btn {{mode === '9x9' ? 'active' : ''}}" role="button" aria-label="选择九宫格" hover-class="tap-active" data-mode="9x9" bindtap="setMode"><text>9×9</text><text class="opt-name">九宫格</text></view>
       </view>
     </view>
 
-    <view class="card section rounds-section">
+    <view class="card section rounds-section {{matching || busyAction ? 'selection-locked' : ''}}">
       <view><text class="section-label block">对战局数</text><text class="section-hint">可选择 1–5 局</text></view>
       <view class="rounds-input-row">
-        <view class="round-control" bindtap="roundsMinus">－</view>
-        <input class="rounds-input" type="number" value="{{totalRounds}}" bindinput="onRoundsInput" maxlength="1" />
-        <view class="round-control" bindtap="roundsPlus">＋</view>
+        <view class="round-control" role="button" aria-label="减少对战局数" hover-class="tap-active" bindtap="roundsMinus">－</view>
+        <input class="rounds-input" aria-label="对战局数" type="number" value="{{totalRounds}}" bindinput="onRoundsInput" maxlength="1" />
+        <view class="round-control" role="button" aria-label="增加对战局数" hover-class="tap-active" bindtap="roundsPlus">＋</view>
       </view>
     </view>
 
@@ -34,14 +36,14 @@
     </view>
 
     <view wx:if="{{!matching && !showRoomPanel}}" class="actions">
-      <button class="btn-primary action-btn" bindtap="startRandomMatch">随机匹配</button>
+      <button class="btn-primary action-btn" disabled="{{busyAction || isLocalMode}}" bindtap="startRandomMatch">随机匹配</button>
       <view class="friend-divider"><view></view><text>好友房间</text><view></view></view>
       <view class="join-input-row">
-        <input class="join-input" placeholder="输入 6 位房间号" maxlength="6" value="{{inputRoomCode}}" bindinput="onRoomInput" />
+        <input class="join-input" aria-label="6 位房间号" placeholder="输入 6 位房间号" maxlength="6" value="{{inputRoomCode}}" bindinput="onRoomInput" />
       </view>
       <view class="action-row">
-        <button class="btn-secondary action-btn-half" bindtap="createRoom">创建房间</button>
-        <button class="btn-primary action-btn-half" bindtap="joinRoom">加入房间</button>
+        <button class="btn-secondary action-btn-half" loading="{{busyAction === 'create'}}" disabled="{{busyAction || isLocalMode}}" bindtap="createRoom">创建房间</button>
+        <button class="btn-primary action-btn-half" loading="{{busyAction === 'join'}}" disabled="{{busyAction || isLocalMode || inputRoomCode.length !== 6}}" bindtap="joinRoom">加入房间</button>
       </view>
     </view>
 

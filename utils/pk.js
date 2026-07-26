@@ -93,18 +93,18 @@ function pollMatch(matchId, onChange, onError) {
 
 // === 同步棋盘进度（走云函数，不依赖客户端写权限） ===
 var lastSyncTime = 0;
-function syncProgress(matchId, slot, grid) {
+function syncProgress(matchId, slot, grid, round) {
   var now = Date.now();
   if (now - lastSyncTime < 2000) return; // 节流：最少 2 秒一次
   lastSyncTime = now;
-  callFn('pkState', { action: 'syncProgress', matchId: matchId, grid: grid }).catch(function (e) {
+  callFn('pkState', { action: 'syncProgress', matchId: matchId, grid: grid, round: round }).catch(function (e) {
     console.warn('syncProgress fail', e);
   });
 }
 
 // 强制同步（提交前调用，不走节流）
-function forceSync(matchId, slot, grid) {
-  return callFn('pkState', { action: 'syncProgress', matchId: matchId, grid: grid }).catch(function (e) {
+function forceSync(matchId, slot, grid, round) {
+  return callFn('pkState', { action: 'syncProgress', matchId: matchId, grid: grid, round: round }).catch(function (e) {
     console.warn('forceSync fail', e);
   });
 }

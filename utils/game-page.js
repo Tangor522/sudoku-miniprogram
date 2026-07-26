@@ -39,7 +39,8 @@ function createGamePage(options) {
       timer: 0, timerText: '00:00.0', timerMain: '00:00', timerTenths: '0', gameStarted: false, isRunning: false,
       showResult: false, resultStatus: null, currentLevel: 1, showCongrats: false,
       numberRows: makeNumberRows(cfg.size),
-      sizeClass: 'size-' + cfg.size
+      sizeClass: 'size-' + cfg.size,
+      canUndo: false
     },
     onLoad: function () {
       var that = this;
@@ -80,10 +81,11 @@ function createGamePage(options) {
       var generated = sudoku.generatePuzzle(mode, this.data.currentLevel);
       var grid = sudoku.toCellGrid(generated.puzzle);
       if (this.timer) this.timer.stop();
+      this.undoHistory = [];
       this.setData({
         grid: grid, gridRows: this.buildRows(grid, null), solution: generated.solution,
         selectedCell: null, timer: 0, timerText: '00:00.0', timerMain: '00:00', timerTenths: '0', gameStarted: false,
-        isRunning: false, showResult: false, resultStatus: null
+        isRunning: false, showResult: false, resultStatus: null, canUndo: false
       });
     },
     handleStart: function () {
@@ -101,12 +103,38 @@ function createGamePage(options) {
       if (!selected || this.data.grid[selected.row][selected.col].fixed) return;
       var old = this.data.grid[selected.row][selected.col].value;
       if (old === value) return;
+      if (!this.undoHistory) this.undoHistory = [];
+      // 回退按“最近操作过的不同位置”记录。同一格反复改数只占一个名额，
+      // 并始终保留该格第一次修改前的值，回退时一次恢复到原状态。
+      var existingIndex = this.undoHistory.findIndex(function (item) {
+        return item.row === selected.row && item.col === selected.col;
+      });
+      var action = existingIndex >= 0
+        ? this.undoHistory.splice(existingIndex, 1)[0]
+        : { row: selected.row, col: selected.col, value: old };
+      this.undoHistory.push(action);
+      if (this.undoHistory.length > 3) this.undoHistory.shift();
       var grid = cloneCells(this.data.grid);
       grid[selected.row][selected.col].value = value;
       grid.forEach(function (row) { row.forEach(function (cell) { cell.error = false; }); });
-      this.setData({ grid: grid, gridRows: this.buildRows(grid, selected) });
+      this.setData({ grid: grid, gridRows: this.buildRows(grid, selected), canUndo: true });
     },
     onNumberClick: function (e) { this.setCellValue(Number(e.currentTarget.dataset.num)); },
+    undoLast: function () {
+      if (!this.data.gameStarted || !this.undoHistory || !this.undoHistory.length) return;
+      var action = this.undoHistory.pop();
+      var grid = cloneCells(this.data.grid);
+      if (!grid[action.row] || !grid[action.row][action.col] || grid[action.row][action.col].fixed) return;
+      grid[action.row][action.col].value = action.value;
+      grid.forEach(function (row) { row.forEach(function (cell) { cell.error = false; }); });
+      var selected = { row: action.row, col: action.col };
+      this.setData({
+        grid: grid,
+        gridRows: this.buildRows(grid, selected),
+        selectedCell: selected,
+        canUndo: this.undoHistory.length > 0
+      });
+    },
     checkAnswer: function () {
       var result = sudoku.checkGrid(this.data.grid, mode);
       if (!result.isComplete) {

@@ -9,10 +9,10 @@
         <text class="brand-title">数独小勇士</text>
         <text class="brand-eyebrow">每天进步一小格</text>
       </view>
-      <view class="avatar-wrap" aria-label="{{user ? '退出登录' : '登录'}}" bindtap="handleAvatarTap">
+      <view class="avatar-wrap" role="button" aria-label="{{user ? '退出登录' : '登录'}}" hover-class="tap-active" bindtap="handleAvatarTap">
         <image wx:if="{{user.avatarUrl}}" class="avatar" src="{{user.avatarUrl}}" mode="aspectFill"></image>
         <view wx:else class="avatar avatar-text">{{firstLetter}}</view>
-        <view class="online-dot"></view>
+        <view wx:if="{{user}}" class="online-dot"></view>
       </view>
     </view>
 
@@ -32,15 +32,15 @@
       <text class="section-sub">循序渐进 · 每种模式 100 关</text>
     </view>
     <view class="mode-grid">
-      <view class="mode-card" bindtap="go4x4">
+      <view class="mode-card" role="button" aria-label="开始四宫格挑战" hover-class="tap-active" bindtap="go4x4">
         <view class="mode-top"><view class="mode-icon">4×4</view><view class="difficulty easy">启蒙</view></view>
         <text class="mode-title">四宫格</text><text class="mode-desc">认识规则，轻松入门</text><view class="mode-action">开始挑战</view>
       </view>
-      <view class="mode-card" bindtap="go6x6">
+      <view class="mode-card" role="button" aria-label="开始六宫格挑战" hover-class="tap-active" bindtap="go6x6">
         <view class="mode-top"><view class="mode-icon">6×6</view><view class="difficulty medium">进阶</view></view>
         <text class="mode-title">六宫格</text><text class="mode-desc">训练推理，提升专注</text><view class="mode-action">继续成长</view>
       </view>
-      <view class="mode-card mode-nine" bindtap="go9x9">
+      <view class="mode-card mode-nine" role="button" aria-label="开始九宫格挑战" hover-class="tap-active" bindtap="go9x9">
         <view class="mode-top"><view class="mode-icon">9×9</view><view class="difficulty hard">经典</view></view>
         <text class="mode-title">九宫格</text><text class="mode-desc">标准数独，唯一解挑战</text><view class="mode-action">挑战自我</view>
       </view>
@@ -48,16 +48,16 @@
 
     <view class="section-head tools-head"><text class="section-title">更多</text></view>
     <view class="quick-row">
-      <view class="quick-card" bindtap="goStats">
+      <view class="quick-card" role="button" aria-label="查看成长记录" hover-class="tap-active" bindtap="goStats">
         <view class="quick-icon chart-icon"><view></view><view></view><view></view></view>
         <view class="quick-copy"><text class="quick-title">成长记录</text><text class="quick-sub">查看每次进步</text></view>
       </view>
-      <view class="quick-card" bindtap="goRanking">
+      <view class="quick-card" role="button" aria-label="查看勇士排行" hover-class="tap-active" bindtap="goRanking">
         <view class="quick-icon medal-icon"><view>1</view></view>
         <view class="quick-copy"><text class="quick-title">勇士排行</text><text class="quick-sub">看看你的名次</text></view>
       </view>
     </view>
-    <view class="pk-card" bindtap="goPk">
+    <view class="pk-card" role="button" aria-label="进入双人在线对战" hover-class="tap-active" bindtap="goPk">
       <view class="pk-icon">VS</view>
       <view class="pk-copy"><text class="quick-title">双人在线对战</text><text class="quick-sub">和伙伴公平完成同一组题</text></view>
       <view class="chevron"></view>
@@ -66,9 +66,9 @@
     <view class="theme-bar">
       <view><text class="theme-label">界面主题</text><text class="theme-value">选择喜欢的专注色</text></view>
       <view class="theme-options">
-        <view class="theme-choice {{colorMode === 'normal' ? 'active' : ''}}" data-mode="normal" bindtap="setColorMode"><view class="theme-dot pink"></view></view>
-        <view class="theme-choice {{colorMode === 'soft' ? 'active' : ''}}" data-mode="soft" bindtap="setColorMode"><view class="theme-dot green"></view></view>
-        <view class="theme-choice {{colorMode === 'eye-care' ? 'active' : ''}}" data-mode="eye-care" bindtap="setColorMode"><view class="theme-dot amber"></view></view>
+        <view class="theme-choice {{colorMode === 'normal' ? 'active' : ''}}" role="button" aria-label="粉色主题" hover-class="tap-active" data-mode="normal" bindtap="setColorMode"><view class="theme-dot pink"></view></view>
+        <view class="theme-choice {{colorMode === 'soft' ? 'active' : ''}}" role="button" aria-label="绿色主题" hover-class="tap-active" data-mode="soft" bindtap="setColorMode"><view class="theme-dot green"></view></view>
+        <view class="theme-choice {{colorMode === 'eye-care' ? 'active' : ''}}" role="button" aria-label="护眼黄主题" hover-class="tap-active" data-mode="eye-care" bindtap="setColorMode"><view class="theme-dot amber"></view></view>
       </view>
     </view>
   </view>

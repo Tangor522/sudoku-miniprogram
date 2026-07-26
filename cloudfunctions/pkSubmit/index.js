@@ -35,7 +35,8 @@ exports.main = async (event) => {
       if (myState.finished) throw new Error('你已完成全部局数');
 
       var roundIdx = myState.currentRound - 1; // 0-based
-      var puzzle = match.rounds[roundIdx].puzzle;
+      var round = match.rounds[roundIdx];
+      var puzzle = round.puzzle;
 
       if (!Array.isArray(grid) || grid.length !== puzzle.length || grid.some(function (row) {
         return !Array.isArray(row) || row.length !== puzzle.length || row.some(function (v) {
@@ -62,8 +63,22 @@ exports.main = async (event) => {
         return { ok: false, reason: 'wrong', message: '答案不正确，请继续' };
       }
 
+      // 最终以该局保存的唯一正解为准；兼容旧对局没有 solution 的情况，
+      // 从题目现场求解后再比对。即便客户端校验被绕过，服务端也不能放行错答。
+      var expectedSolution = round.solution || sudoku.solvePuzzle(puzzle, match.mode);
+      if (!expectedSolution) throw new Error('本局答案数据异常');
+      for (var sr = 0; sr < grid.length; sr++) {
+        for (var sc = 0; sc < grid[sr].length; sc++) {
+          if (grid[sr][sc] !== expectedSolution[sr][sc]) {
+            return { ok: false, reason: 'wrong', message: '答案不正确，请继续' };
+          }
+        }
+      }
+
       // 计算本局用时（毫秒，用于秒表展示）
-      var startTime = myState.roundStartTimes[roundIdx] || Date.now();
+      var startTime = (myState.roundStartTimes || [])[roundIdx];
+      // 兼容旧版对局中数组下标写入失败的情况：match.updatedAt 为上一局推进时刻。
+      if (typeof startTime !== 'number' || startTime <= 0) startTime = match.updatedAt || match.createdAt || Date.now();
       var usedTime = Math.max(1, Date.now() - startTime);
 
       var now = Date.now();
@@ -117,7 +132,11 @@ exports.main = async (event) => {
       } else {
         // 还有下一局，推进到下一局
         updates['playerStates.' + slot + '.currentRound'] = nextRound;
-        updates['playerStates.' + slot + '.roundStartTimes.' + roundIdx + 1] = now;
+        // 整体替换开始时间数组：微信云数据库对数组下标的点路径更新不稳定，
+        // 一旦未写入，下一局会回退到 Date.now() 并被记为 00:00.0。
+        var newRoundStartTimes = (myState.roundStartTimes || []).slice();
+        newRoundStartTimes[roundIdx + 1] = now;
+        updates['playerStates.' + slot + '.roundStartTimes'] = db.command.set(newRoundStartTimes);
         // 重置自己的 progress grid 为下一题
         var nextPuzzle = match.rounds[roundIdx + 1].puzzle;
         updates['progress.' + slot + '.grid'] = nextPuzzle.map(function (r) { return r.slice(); });

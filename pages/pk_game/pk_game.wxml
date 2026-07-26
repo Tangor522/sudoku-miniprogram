@@ -1,9 +1,13 @@
 <view class="root theme-{{colorMode}} page-bg">
   <view wx:if="{{loading}}" class="loading-box"><view class="loading-spinner"></view><view class="loading-text">正在加载对局</view></view>
+  <view wx:elif="{{loadError}}" class="load-error-box">
+    <view class="load-error-mark">!</view><view class="load-error-title">暂时无法进入对局</view><view class="load-error-text">{{loadError}}</view>
+    <button class="btn-primary retry-load-btn" bindtap="retryLoad">重新加载</button><button class="btn-secondary retry-load-btn" bindtap="leaveBrokenMatch">返回对战大厅</button>
+  </view>
 
   <view wx:else class="game-container">
     <view class="battle-head">
-      <view class="exit-btn" bindtap="exitBattle">{{gamePhase === 'playing' ? '认输' : '退出对战'}}</view>
+      <view class="exit-btn" role="button" aria-label="{{gamePhase === 'playing' ? '认输' : '退出对战'}}" hover-class="tap-active" bindtap="exitBattle">{{gamePhase === 'playing' ? '认输' : '退出对战'}}</view>
       <view class="round-info"><text>{{mode}}</text><text class="round-count">{{totalRounds}} 局</text></view>
       <view class="timer"><view class="timer-dot"></view>{{timerText}}</view>
     </view>
@@ -38,7 +42,7 @@
             <text class="ready-name">{{oppInfo.nickName || '对手'}}</text><view class="ready-status {{oppReady ? 'ready-yes' : 'ready-wait'}}">{{oppReady ? '已准备' : '等待中'}}</view>
           </view>
         </view>
-        <button wx:if="{{!myReady}}" class="btn-primary ready-btn" bindtap="handleReady">准备开始</button>
+        <button wx:if="{{!myReady}}" class="btn-primary ready-btn" loading="{{preparing}}" disabled="{{preparing}}" bindtap="handleReady">{{preparing ? '准备中' : '准备开始'}}</button>
         <view wx:else class="ready-waiting-text"><view class="waiting-dot"></view>等待对手准备</view>
       </view>
     </view>
@@ -56,7 +60,7 @@
             <view class="grid-row">
               <block wx:for="{{row}}" wx:for-item="cell" wx:key="col">
                 <view class="cell-wrap {{cell.borderLeft ? 'border-left' : ''}} {{cell.borderTop ? 'border-top' : ''}}">
-                  <view class="cell {{cell.fixed ? 'cell-fixed' : 'cell-input'}} {{cell.error ? 'cell-error' : ''}} {{cell.selected ? 'cell-selected' : ''}}" data-row="{{cell.row}}" data-col="{{cell.col}}" bindtap="selectCell"><text class="cell-text">{{cell.value !== 0 ? cell.value : ''}}</text></view>
+                  <view class="cell {{cell.fixed ? 'cell-fixed' : 'cell-input'}} {{cell.error ? 'cell-error' : ''}} {{cell.selected ? 'cell-selected' : ''}}" role="button" aria-label="第 {{cell.row + 1}} 行第 {{cell.col + 1}} 列，{{cell.fixed ? '固定数字 ' + cell.value : (cell.value ? '已填 ' + cell.value : '空格')}}" data-row="{{cell.row}}" data-col="{{cell.col}}" bindtap="selectCell"><text class="cell-text">{{cell.value !== 0 ? cell.value : ''}}</text></view>
                 </view>
               </block>
             </view>
@@ -65,10 +69,14 @@
       </view>
 
       <view class="numpad">
-        <view class="numpad-row"><view wx:for="{{numbersRow1}}" wx:key="*this" class="num-btn" data-num="{{item}}" bindtap="onNumberClick">{{item}}</view></view>
-        <view class="numpad-row"><view wx:for="{{numbersRow2}}" wx:key="*this" class="num-btn" data-num="{{item}}" bindtap="onNumberClick">{{item}}</view></view>
+        <view wx:for="{{numberRows}}" wx:for-item="numberRow" wx:key="index" class="numpad-row">
+          <view wx:for="{{numberRow}}" wx:key="*this" class="num-btn" role="button" aria-label="填入数字 {{item}}" hover-class="tap-active" data-num="{{item}}" bindtap="onNumberClick">{{item}}</view>
+        </view>
       </view>
-      <button class="submit-btn" bindtap="submitAnswer">提交答案</button>
+      <view class="game-actions">
+        <button class="undo-btn" disabled="{{!canUndo}}" bindtap="undoLast">退回</button>
+        <button class="submit-btn" loading="{{submitting}}" disabled="{{submitting}}" bindtap="submitAnswer">{{submitting ? '提交中' : '提交答案'}}</button>
+      </view>
     </block>
 
     <view wx:if="{{oppOffline}}" class="offline-tip">对手暂时离线，等待重连 {{reconnectCountdown}} 秒</view>

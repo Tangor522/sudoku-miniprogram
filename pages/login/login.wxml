@@ -10,9 +10,9 @@
     <view class="login-box panel">
       <view class="panel-title">登录后继续</view>
       <view class="login-desc">{{loginDesc}}</view>
-      <button class="btn-primary login-btn" loading="{{logging}}" disabled="{{logging}}" bindtap="handleLogin">{{logging ? '登录中' : '微信快捷登录'}}</button>
+      <button class="btn-primary login-btn" loading="{{logging}}" disabled="{{logging}}" bindtap="handleLogin">{{logging ? '登录中' : (isLocalMode ? '本机体验登录' : '微信快捷登录')}}</button>
       <view wx:if="{{error}}" class="login-error">{{error}}</view>
-      <view class="skip-btn" bindtap="continueAsGuest">暂不登录，返回体验</view>
+      <view class="skip-btn" role="button" aria-label="暂不登录，返回体验" hover-class="tap-active" bindtap="continueAsGuest">暂不登录，返回体验</view>
       <view wx:if="{{isLocalMode}}" class="local-tip">当前为本地模式，进度仅保存在本机</view>
     </view>
   </view>

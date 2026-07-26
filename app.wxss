@@ -78,15 +78,32 @@ page {
   color: var(--text-main);
 }
 
-button { font-family: inherit; }
+/* 重置微信原生 button 的默认行高、上下内边距和自动外边距。
+ * 所有页面按钮统一使用 flex 做水平、垂直居中，避免不同机型文字偏上或偏下。 */
+button {
+  margin-left:0;
+  margin-right:0;
+  padding-top:0;
+  padding-bottom:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-sizing:border-box;
+  text-align:center;
+  line-height:1.2;
+  font-family:inherit;
+}
 button,input,text { -webkit-text-size-adjust:100%; }
+.tap-active{opacity:.86;transform:scale(.98)}
 
 .btn-primary,.btn-secondary,.btn-accent {
   min-height: 92rpx;
+  padding-top:0;
+  padding-bottom:0;
   border-radius: 26rpx;
   font-size: 30rpx;
   font-weight: 800;
-  line-height: 1.35;
+  line-height: 1.2;
   transition: transform .12s ease,opacity .12s ease;
 }
 .btn-primary,.btn-accent {

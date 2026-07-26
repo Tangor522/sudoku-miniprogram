@@ -8,6 +8,7 @@ jest.mock('wx-server-sdk', () => mockHelper.buildMock(mockStore));
 
 const cloud = require('wx-server-sdk');
 const handler = require('../../cloudfunctions/pkMatch/index').main;
+const sudokuEngine = require('../../utils/sudoku');
 
 function asUser(openid) {
   cloud.getWXContext = function () { return { OPENID: openid, APPID: 'x' }; };
@@ -31,14 +32,22 @@ describe('云函数 pkMatch', function () {
       expect(res.match.players[1].avatarUrl).toBe('cloud://avatar.png');
     });
 
-    test('应支持 9x9 PK 并生成唯一解题目', async function () {
+    test.each(['4x4', '6x6', '9x9'])('%s PK 必须生成唯一解并保存该局正解', async function (mode) {
       asUser('test-openid-001');
-      await handler({ action: 'randomMatch', mode: '9x9', totalRounds: 1 });
+      await handler({ action: 'randomMatch', mode: mode, totalRounds: 1 });
       asUser('test-openid-002');
-      var res = await handler({ action: 'randomMatch', mode: '9x9', totalRounds: 1 });
+      var res = await handler({ action: 'randomMatch', mode: mode, totalRounds: 1 });
       expect(res.ok).toBe(true);
-      expect(res.match.rounds[0].puzzle.length).toBe(9);
-      expect(res.match.rounds[0].puzzle.every(function (row) { return row.length === 9; })).toBe(true);
+      var round = res.match.rounds[0];
+      var size = Number(mode.charAt(0));
+      expect(round.puzzle.length).toBe(size);
+      expect(round.solution.length).toBe(size);
+      expect(sudokuEngine.countSolutions(round.puzzle, mode, 2)).toBe(1);
+      round.puzzle.forEach(function (row, r) {
+        row.forEach(function (value, c) {
+          if (value) expect(round.solution[r][c]).toBe(value);
+        });
+      });
     });
 
     test('无人等待时应创建等待房间（slot 0, status waiting）', async function () {

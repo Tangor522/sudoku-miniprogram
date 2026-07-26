@@ -2,16 +2,17 @@
   <view class="stats-container">
     <view class="page-intro"><text class="page-title">成长记录</text><text class="page-sub">每一次专注，都值得被看见</text></view>
     <view class="mode-tabs">
-      <view class="mode-tab {{gameMode === '4x4' ? 'active' : ''}}" data-mode="4x4" bindtap="switchMode">4×4</view>
-      <view class="mode-tab {{gameMode === '6x6' ? 'active' : ''}}" data-mode="6x6" bindtap="switchMode">6×6</view>
-      <view class="mode-tab {{gameMode === '9x9' ? 'active' : ''}}" data-mode="9x9" bindtap="switchMode">9×9</view>
+      <view class="mode-tab {{gameMode === '4x4' ? 'active' : ''}}" role="button" aria-label="查看四宫格记录" hover-class="tap-active" data-mode="4x4" bindtap="switchMode">4×4</view>
+      <view class="mode-tab {{gameMode === '6x6' ? 'active' : ''}}" role="button" aria-label="查看六宫格记录" hover-class="tap-active" data-mode="6x6" bindtap="switchMode">6×6</view>
+      <view class="mode-tab {{gameMode === '9x9' ? 'active' : ''}}" role="button" aria-label="查看九宫格记录" hover-class="tap-active" data-mode="9x9" bindtap="switchMode">9×9</view>
     </view>
     <view class="summary-card">
       <view><text class="summary-label">当前模式已完成</text><text class="summary-value">{{records.length}}<text>关</text></text></view>
       <view class="summary-chart"><view></view><view></view><view></view></view>
     </view>
     <view class="list-head"><text>闯关明细</text><text>最佳成绩</text></view>
-    <view wx:if="{{records.length === 0}}" class="empty">
+    <view wx:if="{{loading}}" class="loading-box"><view class="loading-spinner"></view><text class="loading-text">正在加载记录</text></view>
+    <view wx:elif="{{records.length === 0}}" class="empty">
       <view class="empty-board"><view></view><view></view><view></view><view></view></view>
       <text class="empty-title">从第一关开始记录</text>
       <text class="empty-sub">完成挑战后，你的最佳成绩会保存在这里</text>
@@ -24,6 +25,6 @@
         <text class="record-time">{{item.usedTimeText}}</text>
       </view>
     </view>
-    <button wx:if="{{records.length > 0}}" class="start-button bottom" bindtap="goGame">继续挑战</button>
+    <button wx:if="{{!loading && records.length > 0}}" class="start-button bottom" bindtap="goGame">继续挑战</button>
   </view>
 </view>

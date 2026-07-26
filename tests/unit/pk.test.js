@@ -96,11 +96,11 @@ describe('utils/pk PK 功能封装', function () {
       jest.spyOn(Date, 'now').mockReturnValue(10000000);
       var n = 0;
       mock.wx.cloud.callFunctionImpl = function () { n++; return Promise.resolve({ result: {} }); };
-      pk.syncProgress('m1', 0, [1]);
-      pk.syncProgress('m1', 0, [1]); // 2s 内 → 节流
+      pk.syncProgress('m1', 0, [1], 2);
+      pk.syncProgress('m1', 0, [1], 2); // 2s 内 → 节流
       expect(n).toBe(1);
       Date.now.mockReturnValue(10002001); // 2s 后
-      pk.syncProgress('m1', 0, [1]);
+      pk.syncProgress('m1', 0, [1], 2);
       expect(n).toBe(2);
     });
 
@@ -108,8 +108,8 @@ describe('utils/pk PK 功能封装', function () {
       jest.spyOn(Date, 'now').mockReturnValue(20000000);
       var n = 0;
       mock.wx.cloud.callFunctionImpl = function () { n++; return Promise.resolve({ result: {} }); };
-      await pk.forceSync('m1', 0, [1]);
-      await pk.forceSync('m1', 0, [1]);
+      await pk.forceSync('m1', 0, [1], 2);
+      await pk.forceSync('m1', 0, [1], 2);
       expect(n).toBe(2);
     });
 

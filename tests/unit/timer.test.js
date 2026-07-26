@@ -85,5 +85,23 @@ describe('utils/timer', function () {
       expect(t.getSeconds()).toBe(4);
       t.stop();
     });
+
+    test('start 可从云端已过用时继续计时', function () {
+      var t = timerUtil.createTimer(function () {});
+      t.start(12500);
+      now += 800;
+      expect(t.get()).toBe(13300);
+      t.stop();
+    });
+
+    test('setElapsed 可在运行中重新校准', function () {
+      var t = timerUtil.createTimer(function () {});
+      t.start();
+      now += 1000;
+      t.setElapsed(9000);
+      now += 500;
+      expect(t.get()).toBe(9500);
+      t.stop();
+    });
   });
 });

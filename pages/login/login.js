@@ -110,6 +110,7 @@ Page({
   },
 
   continueAsGuest: function () {
+    if (this.data.from === 'pk') wx.removeStorageSync('pendingPkRoomCode');
     wx.navigateBack({
       delta: 1,
       fail: function () {

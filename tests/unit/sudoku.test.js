@@ -78,6 +78,16 @@ describe('utils/sudoku 生成器', function () {
     expect(sudoku.countSolutions(easy, '9x9', 2)).toBe(1);
   });
 
+  test.each([
+    ['4x4', sudoku.generate4x4Puzzle],
+    ['6x6', sudoku.generate6x6Puzzle],
+    ['9x9', sudoku.generate9x9Puzzle]
+  ])('%s 单人题目连续生成均必须只有一个解', function (mode, generate) {
+    for (var i = 0; i < 6; i++) {
+      expect(sudoku.countSolutions(generate(20), mode, 2)).toBe(1);
+    }
+  });
+
   test('toCellGrid 正确标记 fixed（非空格为固定）', function () {
     var grid = sudoku.toCellGrid([[1, 0], [0, 2]]);
     expect(grid[0][0].value).toBe(1);

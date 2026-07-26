@@ -16,8 +16,6 @@ Page({
     mode: '',
     totalRounds: 1,
     myCurrentRound: 1,
-    oppCurrentRound: 1,
-
     // 准备阶段
     gamePhase: 'readying',  // 'readying' | 'playing' | 'finished'
     myReady: false,
@@ -51,11 +49,13 @@ Page({
 
     // 状态
     loading: true,
-    myInfo: null,
-    oppInfo: null,
-    numbers: [],
-    numbersRow1: [],
-    numbersRow2: []
+    loadError: '',
+    submitting: false,
+    preparing: false,
+    myInfo: {},
+    oppInfo: {},
+    numberRows: [],
+    canUndo: false
   },
 
   onLoad: function (options) {
@@ -78,11 +78,22 @@ Page({
     if (!auth.requireLogin()) return;
     theme.injectTheme(this);
     if (!this.poller && this.matchId) { this.startPolling(); }
+    if (this.matchId && !this.data.loading) {
+      this.reloadData();
+      this.startHeartbeat();
+    }
   },
 
   onHide: function () {
+    // PK 用时由云端开始时间决定；回到前台时会重新校准，不会少算后台时间。
+    if (this.matchId && this.data.gamePhase === 'playing' && this.data.grid.length) {
+      var numGrid = this.data.grid.map(function (r) { return r.map(function (c) { return c.value; }); });
+      // 退到后台前强制保存，避免最后一次输入或退回被 2 秒节流遗漏。
+      pk.forceSync(this.matchId, this.mySlot, numGrid, this.data.myCurrentRound);
+    }
     this.timer.pause();
     if (this.heartbeatTimer) { clearInterval(this.heartbeatTimer); this.heartbeatTimer = null; }
+    if (this.reconnectTimer) { clearInterval(this.reconnectTimer); this.reconnectTimer = null; }
   },
 
   onUnload: function () {
@@ -92,7 +103,7 @@ Page({
     if (this.unsubTheme) this.unsubTheme();
     // 页面卸载可能由系统回收、跳转或异常中断触发，不能据此判定玩家主动认输。
     // 但准备阶段尚未形成有效比赛，可安全取消，避免把对手留在失效房间。
-    if (this.matchId && this.data.gamePhase === 'readying') {
+    if (this.matchId && this.data.gamePhase === 'readying' && !this.data.loading && !this.data.loadError) {
       pk.leaveBeforeStart(this.matchId);
       pk.clearActiveMatch();
     }
@@ -100,18 +111,19 @@ Page({
 
   initMatch: function () {
     var that = this;
+    this.setData({ loading: true, loadError: '' });
     pk.reconnect(this.matchId).then(function (res) {
-      if (!res.ok) { wx.showToast({ title: '对局异常', icon: 'none' }); setTimeout(function () { wx.navigateBack(); }, 1500); return; }
+      if (!res.ok) { that.setData({ loading: false, loadError: res.error || '对局已结束或不存在' }); return; }
       var match = res.match;
       MODE = match.mode;
       that.applyMatchData(match);
+      if (that.data.loadError) return;
       that.setData({ loading: false });
       that.startPolling();
       that.startHeartbeat();
     }).catch(function (err) {
       console.error('initMatch error', err);
-      that.setData({ loading: false });
-      wx.showToast({ title: '加载失败', icon: 'none' });
+      that.setData({ loading: false, loadError: '对局加载失败，请检查网络后重试' });
     });
   },
 
@@ -126,17 +138,22 @@ Page({
     if (!match.rounds || !match.rounds[myRoundIdx]) {
       // 数据异常保护，避免越界崩溃
       console.error('applyMatchData: rounds 数据异常', myRound, match.rounds);
+      this.setData({ loading: false, loadError: '对局数据异常，请返回后重新匹配' });
       return;
     }
     var puzzle = match.rounds[myRoundIdx].puzzle;
-    var solution = sudoku.solvePuzzle(puzzle, match.mode);
+    var solution = match.rounds[myRoundIdx].solution || sudoku.solvePuzzle(puzzle, match.mode);
+    if (!solution) {
+      this.setData({ loading: false, loadError: '本局答案数据异常，请返回后重新匹配' });
+      return;
+    }
     var size = puzzle.length;
     var numbers = [];
     for (var n = 1; n <= size; n++) numbers.push(n);
-    // 分2行显示键盘（与单人模式一致）
-    var half = Math.ceil(size / 2);
-    var numbersRow1 = numbers.slice(0, half);
-    var numbersRow2 = numbers.slice(half);
+    // 与单人模式一致：4×4 为 2×2，6×6 为 2×3，9×9 为 3×3。
+    var columns = size === 4 ? 2 : 3;
+    var numberRows = [];
+    for (var ni = 0; ni < numbers.length; ni += columns) numberRows.push(numbers.slice(ni, ni + columns));
 
     // 我的棋盘：从 progress 恢复或用 puzzle 初始化
     var myGrid;
@@ -159,6 +176,11 @@ Page({
     var bothReady = myReady && oppReady;
     var phase = bothReady ? 'playing' : 'readying';
 
+    if (this.undoRound !== myRound) {
+      this.undoRound = myRound;
+      this.undoHistory = [];
+    }
+
     this.setData({
       matchId: match._id,
       mySlot: this.mySlot, oppSlot: this.oppSlot,
@@ -175,17 +197,22 @@ Page({
       myTotalTimeText: timerUtil.formatStopwatch(myState.totalTime || 0),
       oppTotalTimeText: timerUtil.formatStopwatch(oppState.totalTime || 0),
       myInfo: myInfo, oppInfo: oppInfo,
-      numbers: numbers,
-      numbersRow1: numbersRow1,
-      numbersRow2: numbersRow2,
-      timer: 0,
-      timerText: '00:00.0'
+      numberRows: numberRows,
+      canUndo: !!(this.undoHistory && this.undoHistory.length)
     });
+    this.syncRoundTimer(myState, phase === 'playing');
+  },
 
+  syncRoundTimer: function (myState, shouldRun) {
     this.timer.stop();
-    if (phase === 'playing') {
-      this.timer.start();
+    if (!shouldRun || !myState || myState.finished) {
+      this.setData({ timer: 0, timerText: '00:00.0' });
+      return;
     }
+    var roundIdx = Math.max(0, (myState.currentRound || 1) - 1);
+    var startedAt = (myState.roundStartTimes || [])[roundIdx];
+    var elapsed = startedAt ? Math.max(0, Date.now() - startedAt) : 0;
+    this.timer.start(elapsed);
   },
 
   buildRows: function (grid, sel, mode) {
@@ -228,6 +255,9 @@ Page({
     // 整场结束
     if (doc.status === 'finished') {
       this.timer.stop();
+      if (this.poller) { this.poller.close(); this.poller = null; }
+      if (this.heartbeatTimer) { clearInterval(this.heartbeatTimer); this.heartbeatTimer = null; }
+      if (this.reconnectTimer) { clearInterval(this.reconnectTimer); this.reconnectTimer = null; }
       pk.clearActiveMatch();
       var winner = doc.winnerSlot;
       var myResult = winner === this.mySlot ? '胜利' : (winner === -1 ? '平局' : '失败');
@@ -241,19 +271,21 @@ Page({
           round: i + 1,
           myTime: myT,
           oppTime: oppT,
-          myTimeText: myT != null ? timerUtil.formatStopwatch(myT) : '—',
-          oppTimeText: oppT != null ? timerUtil.formatStopwatch(oppT) : '—'
+          myTimeText: myT != null ? timerUtil.formatStopwatch(myT) : '未完成',
+          oppTimeText: oppT != null ? timerUtil.formatStopwatch(oppT) : '未完成'
         });
       }
       this.setData({
+        gamePhase: 'finished',
+        oppOffline: false,
         showFinal: true,
         finalInfo: {
           result: myResult,
           roundsDetail: roundsDetail,
           myTotal: myState.totalTime || 0,
           oppTotal: oppState.totalTime || 0,
-          myTotalText: timerUtil.formatStopwatch(myState.totalTime || 0),
-          oppTotalText: timerUtil.formatStopwatch(oppState.totalTime || 0),
+          myTotalText: (myState.roundTimes || []).length ? timerUtil.formatStopwatch(myState.totalTime || 0) : '未完成',
+          oppTotalText: (oppState.roundTimes || []).length ? timerUtil.formatStopwatch(oppState.totalTime || 0) : '未完成',
           myRounds: myState.currentRound || 0,
           oppRounds: oppState.currentRound || 0
         }
@@ -273,8 +305,7 @@ Page({
     if (myReady && oppReady && this.data.gamePhase === 'readying') {
       // 双方都已准备，开始游戏
       this.setData({ gamePhase: 'playing', myReady: true, oppReady: true });
-      this.timer.stop();
-      this.timer.start();
+      this.syncRoundTimer(myState2, true);
     } else {
       this.setData({ myReady: myReady, oppReady: oppReady });
     }
@@ -334,23 +365,23 @@ Page({
 
   // 点准备开始
   handleReady: function () {
-    if (this.data.myReady) return;
+    if (this.data.myReady || this.data.preparing) return;
     var that = this;
-    wx.showLoading({ title: '准备中...' });
+    this.setData({ preparing: true });
     pk.setReady(this.matchId).then(function (res) {
-      wx.hideLoading();
+      that.setData({ preparing: false });
       if (res.ok) {
         that.setData({ myReady: true, oppReady: res.oppReady });
         if (res.bothReady && that.data.gamePhase === 'readying') {
           that.setData({ gamePhase: 'playing' });
-          that.timer.stop();
-          that.timer.start();
+          // setReady 后再拉一次云端开始时间，避免双方本地起跑时刻不一致。
+          that.reloadData();
         }
       } else {
         wx.showToast({ title: res.error || '准备失败', icon: 'none' });
       }
     }).catch(function (err) {
-      wx.hideLoading();
+      that.setData({ preparing: false });
       console.error('setReady error', err);
       wx.showToast({ title: '网络异常', icon: 'none' });
     });
@@ -368,21 +399,57 @@ Page({
   },
 
   onNumberClick: function (e) {
-    var num = e.currentTarget.dataset.num;
+    var num = Number(e.currentTarget.dataset.num);
     var sel = this.data.selectedCell;
     if (!sel) return;
     if (this.data.grid[sel.row][sel.col].fixed) return;
-    this.data.grid[sel.row][sel.col].value = num;
-    this.data.grid[sel.row][sel.col].error = false;
-    this.setData({
-      grid: this.data.grid,
-      gridRows: this.buildRows(this.data.grid, sel, this.data.mode)
+    var old = this.data.grid[sel.row][sel.col].value;
+    if (old === num) return;
+    if (!this.undoHistory) this.undoHistory = [];
+    // 与单人模式一致：最多回退最近操作过的 3 个不同位置。
+    // 同一位置多次改数只保留第一次修改前的值，并更新其最近操作顺序。
+    var existingIndex = this.undoHistory.findIndex(function (item) {
+      return item.row === sel.row && item.col === sel.col;
     });
-    var numGrid = this.data.grid.map(function (r) { return r.map(function (c) { return c.value; }); });
-    pk.syncProgress(this.matchId, this.mySlot, numGrid);
+    var action = existingIndex >= 0
+      ? this.undoHistory.splice(existingIndex, 1)[0]
+      : { row: sel.row, col: sel.col, value: old };
+    this.undoHistory.push(action);
+    if (this.undoHistory.length > 3) this.undoHistory.shift();
+    var grid = this.data.grid.map(function (row) {
+      return row.map(function (cell) { return { value: cell.value, fixed: cell.fixed, error: false }; });
+    });
+    grid[sel.row][sel.col].value = num;
+    this.setData({
+      grid: grid,
+      gridRows: this.buildRows(grid, sel, this.data.mode),
+      canUndo: true
+    });
+    var numGrid = grid.map(function (r) { return r.map(function (c) { return c.value; }); });
+    pk.syncProgress(this.matchId, this.mySlot, numGrid, this.data.myCurrentRound);
+  },
+
+  undoLast: function () {
+    if (this.data.gamePhase !== 'playing' || !this.undoHistory || !this.undoHistory.length) return;
+    var action = this.undoHistory.pop();
+    var grid = this.data.grid.map(function (row) {
+      return row.map(function (cell) { return { value: cell.value, fixed: cell.fixed, error: false }; });
+    });
+    if (!grid[action.row] || !grid[action.row][action.col] || grid[action.row][action.col].fixed) return;
+    grid[action.row][action.col].value = action.value;
+    var selected = { row: action.row, col: action.col };
+    this.setData({
+      grid: grid,
+      gridRows: this.buildRows(grid, selected, this.data.mode),
+      selectedCell: selected,
+      canUndo: this.undoHistory.length > 0
+    });
+    var numGrid = grid.map(function (r) { return r.map(function (c) { return c.value; }); });
+    pk.forceSync(this.matchId, this.mySlot, numGrid, this.data.myCurrentRound);
   },
 
   submitAnswer: function () {
+    if (this.data.submitting) return;
     var that = this;
     var checkers = { '4x4': sudoku.check4x4, '6x6': sudoku.check6x6, '9x9': sudoku.check9x9 };
     var checker = checkers[this.data.mode];
@@ -406,11 +473,11 @@ Page({
     }
 
     var numGrid = this.data.grid.map(function (r) { return r.map(function (c) { return c.value; }); });
-    wx.showLoading({ title: '提交中...' });
-    pk.forceSync(this.matchId, this.mySlot, numGrid).then(function () {
+    this.setData({ submitting: true });
+    pk.forceSync(this.matchId, this.mySlot, numGrid, this.data.myCurrentRound).then(function () {
       return pk.submitRound(that.matchId, numGrid);
     }).then(function (res) {
-      wx.hideLoading();
+      that.setData({ submitting: false });
       if (!res.ok) {
         if (res.reason === 'wrong') { wx.showToast({ title: '答案不正确', icon: 'none' }); }
         else { wx.showToast({ title: res.error || '提交失败', icon: 'none' }); }
@@ -429,7 +496,7 @@ Page({
         that.reloadData();
       }
     }).catch(function (err) {
-      wx.hideLoading();
+      that.setData({ submitting: false });
       console.error('submit error', err);
       wx.showToast({ title: '网络异常', icon: 'none' });
     });
@@ -440,7 +507,18 @@ Page({
     var that = this;
     pk.reconnect(this.matchId).then(function (res) {
       if (res.ok) { that.applyMatchData(res.match); }
+    }).catch(function (err) {
+      console.error('reload match error', err);
+      wx.showToast({ title: '同步对局失败', icon: 'none' });
     });
+  },
+
+  retryLoad: function () { this.initMatch(); },
+
+  leaveBrokenMatch: function () {
+    pk.clearActiveMatch();
+    this.matchId = null;
+    wx.navigateBack({ delta: 1, fail: function () { wx.reLaunch({ url: '/pages/pk_lobby/pk_lobby' }); } });
   },
 
   goHome: function () {
@@ -448,7 +526,7 @@ Page({
     if (this.heartbeatTimer) { clearInterval(this.heartbeatTimer); this.heartbeatTimer = null; }
     pk.clearActiveMatch();
     this.matchId = null;
-    wx.navigateBack({ delta: 2 });
+    wx.navigateBack({ delta: 2, fail: function () { wx.reLaunch({ url: '/pages/home/home' }); } });
   },
 
   exitBattle: function () {
@@ -468,6 +546,9 @@ Page({
             pk.clearActiveMatch();
             that.matchId = null;
             wx.navigateBack({ delta: 1 });
+          }).catch(function (err) {
+            console.error('exit battle error', err);
+            wx.showToast({ title: '退出失败，请重试', icon: 'none' });
           });
         }
       }
